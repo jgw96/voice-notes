@@ -12,9 +12,7 @@ export class AppIndex extends LitElement {
 
   static get styles() {
     return css`
-      main {
-        padding: 16px;
-      }
+
     `;
   }
 
@@ -28,6 +26,13 @@ export class AppIndex extends LitElement {
     router.setRoutes([
       { path: '/', component: 'app-home' },
       {
+        path: "/new",
+        component: "app-new",
+        action: async() => {
+          await import('./app-new.js');
+        }
+      },
+      {
         path: "/about",
         component: "app-about",
         action: async() => {
@@ -40,8 +45,6 @@ export class AppIndex extends LitElement {
   render() {
     return html`
       <div>
-        <app-header></app-header>
-
         <main>
           <div id="routerOutlet"></div>
         </main>
