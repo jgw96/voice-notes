@@ -205,7 +205,8 @@ export class AppNew extends LitElement {
   }
 
   runVisual(data: Uint8Array) {
-    const canvas = this.shadowRoot?.querySelector('canvas');
+    const onscreenCanvas = this.shadowRoot?.querySelector('canvas')?.getContext('bitmaprenderer');
+    const canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
 
     if (canvas) {
       canvas.width = window.innerWidth;
@@ -217,12 +218,12 @@ export class AppNew extends LitElement {
     if (canvas) {
       context?.clearRect(0, 0, canvas.width, canvas.height);
 
-      this.draw(data, context);
+      this.draw(data, context, canvas, (onscreenCanvas as ImageBitmapRenderingContext));
     }
 
   }
 
-  draw(data: Uint8Array, context: any) {
+  draw(data: Uint8Array, context: any, canvas: OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext) {
     this.analyser?.getByteFrequencyData(data);
 
     context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#292929' : 'white';
@@ -241,18 +242,21 @@ export class AppNew extends LitElement {
       x += barWidth + 1;
     }
 
-    window.requestAnimationFrame(() => this.draw(data, context));
+    let bitmapOne = canvas.transferToImageBitmap();
+    onScreenCanvas.transferFromImageBitmap(bitmapOne);
+
+    window.requestAnimationFrame(() => this.draw(data, context, canvas, onScreenCanvas));
   }
 
   async save() {
     const notes: any[] = await get('notes');
 
     if (notes) {
-      notes.push({name: this.fileName, blob: this.recorded});
+      notes.push({ name: this.fileName, blob: this.recorded });
       await set('notes', notes);
     }
     else {
-      await set('notes', [{name: this.fileName, blob: this.recorded}]);
+      await set('notes', [{ name: this.fileName, blob: this.recorded }]);
     }
 
     Router.go('/');
@@ -276,7 +280,7 @@ export class AppNew extends LitElement {
 
       <div>
 
-        ${!this.recorded ? html`${!this.recording ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null } <canvas></canvas>` : html`<div id="audioDiv">
+        ${!this.recorded ? html`${!this.recording ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null} <canvas></canvas>` : html`<div id="audioDiv">
           <h3>New Note</h3>
 
           <input type="text" placeholder="note name..." @change="${this.handleInput}" .value="${this.fileName}">
