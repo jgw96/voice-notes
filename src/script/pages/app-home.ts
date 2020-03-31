@@ -140,6 +140,13 @@ export class AppHome extends LitElement {
         }
       }
 
+      @media (min-width: 1400px) {
+        ul {
+          padding-left: 18em;
+          padding-right: 18em;
+        }
+      }
+
       @media(spanning: single-fold-vertical) {
         #welcomeBlock {
           width: 50%;

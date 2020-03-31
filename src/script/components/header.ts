@@ -34,6 +34,12 @@ export class AppHeader extends LitElement {
         font-size: 18px;
         font-weight: bold;
       }
+
+      @media (prefers-color-scheme: dark) {
+        header {
+          color: white;
+        }
+      }
     `;
   }
 

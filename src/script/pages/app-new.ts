@@ -136,6 +136,20 @@ export class AppNew extends LitElement {
         height: 100vh;
         width: 100%;
       }
+
+      @media(prefers-color-scheme: dark) {
+        #introText {
+          color: white;
+        }
+
+        #audioDiv h3 {
+          color: white;
+        }
+
+        #toolbar span {
+          color: white;
+        }
+      }
     `;
   }
 
@@ -191,7 +205,6 @@ export class AppNew extends LitElement {
   }
 
   runVisual(data: Uint8Array) {
-
     const canvas = this.shadowRoot?.querySelector('canvas');
 
     if (canvas) {
@@ -212,7 +225,7 @@ export class AppNew extends LitElement {
   draw(data: Uint8Array, context: any) {
     this.analyser?.getByteFrequencyData(data);
 
-    context.fillStyle = 'white';
+    context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#292929' : 'white';
     context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
     let barWidth = (window.innerWidth / data.length) * 2.5;
