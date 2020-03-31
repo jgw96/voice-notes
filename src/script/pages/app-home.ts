@@ -119,6 +119,12 @@ export class AppHome extends LitElement {
         justify-content: center;
       }
 
+      @media(prefers-color-scheme: dark) {
+        #firstIntro {
+          color: white;
+        }
+      }
+
       @media (min-width: 1000px) {
         ul {
           display: grid;
@@ -215,8 +221,8 @@ export class AppHome extends LitElement {
               <h5>${i.name}</h5>
 
               <div id="listHeaderActions">
-                <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg"></button>
-                <button @click="${() => this.deleteNote(i)}"><img src="/assets/close.svg"></button>
+                <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg" alt="share icon"></button>
+                <button @click="${() => this.deleteNote(i)}"><img src="/assets/close.svg" alt="close icon"></button>
               </div>
             </div>
             <audio .src="${URL.createObjectURL(i.blob)}" controls>
@@ -225,7 +231,7 @@ export class AppHome extends LitElement {
 
         <div id="toolbar">
           <button @click="${this.newNote}" id="newButton">
-            <img src="/assets/plus.svg">
+            <img src="/assets/plus.svg" alt="add icon">
             New Note
           </button>
         </div>

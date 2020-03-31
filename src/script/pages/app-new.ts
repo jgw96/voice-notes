@@ -274,7 +274,7 @@ export class AppNew extends LitElement {
     return html`
       <header>
         <button id="backButton" @click="${this.close}">
-          <img src="/assets/close.svg">
+          <img src="/assets/close.svg" alt="close icon">
         </button>
       </heaer>
 
@@ -293,9 +293,9 @@ export class AppNew extends LitElement {
         <div id="toolbar">
           ${this.recording ? html`<span>Recording...</span>` : html`<span></span>`}
           ${!this.recording ? html`<button @click="${this.startRecording}" id="recordButton">
-            <img src="/assets/mic.svg">
+            <img src="/assets/mic.svg" alt="mic icon">
           </button>` : html`<button id="stopButton" @click="${this.stopRecording}">
-            <img src="/assets/stop.svg">
+            <img src="/assets/stop.svg" alt="stop icon">
           </button>`}
         </div>
       </div>
