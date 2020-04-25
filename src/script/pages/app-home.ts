@@ -40,6 +40,8 @@ export class AppHome extends LitElement {
         position: absolute;
         bottom: 16px;
         right: 16px;
+
+        --install-button-color: var(--app-color-primary);
       }
 
       #toolbar {
@@ -107,6 +109,7 @@ export class AppHome extends LitElement {
         margin-left: 4em;
         margin-right: 4em;
         font-size: 1.2em;
+        margin-top: 8em;
       }
 
       #shareButton img {
@@ -117,6 +120,34 @@ export class AppHome extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+
+      #introImg {
+        width: 24em;
+        position: fixed;
+        bottom: 3.6em;
+        right: 0;
+      }
+
+      @keyframes slideup {
+        from {
+          transform: translateY(50px);
+        }
+
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 800px) {
+        #toolbar {
+          animation-name: slideup;
+          animation-duration: 300ms;
+        }
+
+        pwa-install {
+          top: 12px;
+        }
       }
 
       @media(prefers-color-scheme: dark) {
@@ -132,6 +163,11 @@ export class AppHome extends LitElement {
           grid-gap: 16px;
           padding-left: 12em;
           padding-right: 12em;
+        }
+
+        #introImg {
+          bottom: 16px;
+          width: 40em;
         }
 
         #toolbar {
@@ -215,7 +251,7 @@ export class AppHome extends LitElement {
 
       <div>
 
-        ${this.notes ? html`<ul>
+        ${this.notes && this.notes.length > 0 ? html`<ul>
           ${this.notes.map(i => html`<li>
             <div class="listHeader">
               <h5>${i.name}</h5>
@@ -228,6 +264,8 @@ export class AppHome extends LitElement {
             <audio .src="${URL.createObjectURL(i.blob)}" controls>
           </li>`)}
         </ul>` : html`<p id="firstIntro">Hit the button below to start a new note!</p>`}
+
+        <img id="introImg" src="/assets/intro.svg" alt="intro image">
 
         <div id="toolbar">
           <button @click="${this.newNote}" id="newButton">

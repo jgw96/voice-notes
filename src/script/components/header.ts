@@ -20,18 +20,6 @@ export class AppHeader extends LitElement {
         margin-top: 0;
         margin-bottom: 0;
         font-size: 18px;
-        font-weight: normal;
-      }
-
-      nav {
-        width: 7em;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      nav a {
-        color: white;
-        font-size: 18px;
         font-weight: bold;
       }
 

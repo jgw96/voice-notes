@@ -1,7 +1,7 @@
 import { LitElement, css, html, customElement, property } from 'lit-element';
+import { Router } from '@vaadin/router';
 
 import { set, get } from 'idb-keyval';
-import { Router } from '@vaadin/router';
 
 declare var MediaRecorder: any;
 
@@ -58,7 +58,7 @@ export class AppNew extends LitElement {
         background: var(--app-color-primary);
         border: solid 1px var(--app-color-primary);
         border-radius: 2px;
-        color: var(--app-color-primary);
+        color: white;
         padding: 6px;
         padding-left: 12px;
         padding-right: 12px;
@@ -67,6 +67,11 @@ export class AppNew extends LitElement {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        width: 14em;
+
+        animation-name: slideup;
+        animation-duration: 300ms;
       }
 
       #recordButton img {
@@ -135,6 +140,29 @@ export class AppNew extends LitElement {
       canvas {
         height: 100vh;
         width: 100%;
+
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+      }
+
+      @media(max-width: 800px) {
+        #recordButton {
+          width: 100%;
+        }
+      }
+
+      @keyframes slideup {
+        from {
+          transform: translateY(50px);
+        }
+
+        to {
+          transform: translateY(0);
+        }
       }
 
       @media(prefers-color-scheme: dark) {
@@ -157,23 +185,11 @@ export class AppNew extends LitElement {
     super();
   }
 
-  async startRecording() {
-    this.recorded = null;
-
+  async firstUpdated() {
     this.stream = await navigator.mediaDevices.getUserMedia({
       video: false,
       audio: true
     });
-
-    var options = { mimeType: 'audio/webm' };
-    this.mediaRecorder = new MediaRecorder(this.stream, options);
-
-    this.mediaRecorder.ondataavailable = (event: any) => {
-      if (event.data.size > 0) {
-        this.recordedChunks.push(event.data);
-      }
-    };
-    this.mediaRecorder.start(1000);
 
     const audioContext = new window.AudioContext();
     const source = audioContext.createMediaStreamSource(this.stream);
@@ -187,8 +203,23 @@ export class AppNew extends LitElement {
     const dataArray = new Uint8Array(bufferLength);
 
     this.runVisual(dataArray);
+  }
 
+  async startRecording() {
+    this.recorded = null;
     this.recording = true;
+
+    const options = { mimeType: 'audio/webm' };
+
+    this.mediaRecorder = new MediaRecorder(this.stream, options);
+
+    this.mediaRecorder.ondataavailable = (event: any) => {
+      if (event.data.size > 0) {
+        this.recordedChunks.push(event.data);
+      }
+    };
+    this.mediaRecorder.start(1000);
+
   }
 
   stopRecording() {
@@ -207,6 +238,8 @@ export class AppNew extends LitElement {
   runVisual(data: Uint8Array) {
     const onscreenCanvas = this.shadowRoot?.querySelector('canvas')?.getContext('bitmaprenderer');
     const canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
+
+    console.log(canvas, onscreenCanvas);
 
     if (canvas) {
       canvas.width = window.innerWidth;
@@ -229,15 +262,15 @@ export class AppNew extends LitElement {
     context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#292929' : 'white';
     context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-    let barWidth = (window.innerWidth / data.length) * 2.5;
+    let barWidth = (window.innerWidth / data.length) * 4.5;
     let barHeight;
     let x = 0;
 
     for (let i = 0; i < data.length; i++) {
       barHeight = data[i];
 
-      context.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
-      context.fillRect(x, window.innerHeight - barHeight / 2, barWidth, barHeight / 2);
+      context.fillStyle = 'rgb(' + (barHeight + 100) + ',107,210)';
+      context.fillRect(x, window.innerHeight - barHeight * 4, barWidth, barHeight * 4);
 
       x += barWidth + 1;
     }
@@ -267,6 +300,9 @@ export class AppNew extends LitElement {
   }
 
   close() {
+    const track = this.stream?.getTracks()[0];
+    track?.stop();
+
     Router.go('/');
   }
 
@@ -276,11 +312,16 @@ export class AppNew extends LitElement {
         <button id="backButton" @click="${this.close}">
           <img src="/assets/close.svg" alt="close icon">
         </button>
-      </heaer>
+      </header>
 
       <div>
 
-        ${!this.recorded ? html`${!this.recording ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null} <canvas></canvas>` : html`<div id="audioDiv">
+      <canvas></canvas>
+
+        ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null }
+
+        ${
+          this.recorded ? html`<div id="audioDiv">
           <h3>New Note</h3>
 
           <input type="text" placeholder="note name..." @change="${this.handleInput}" .value="${this.fileName}">
@@ -288,11 +329,13 @@ export class AppNew extends LitElement {
           <audio controls .src="${URL.createObjectURL(this.recorded)}"></audio>
 
           <button id="saveButton" @click="${this.save}">Save</button>
-        </div>`}
+        </div>` : null
+        }
         
         <div id="toolbar">
           ${this.recording ? html`<span>Recording...</span>` : html`<span></span>`}
           ${!this.recording ? html`<button @click="${this.startRecording}" id="recordButton">
+            Start Recording
             <img src="/assets/mic.svg" alt="mic icon">
           </button>` : html`<button id="stopButton" @click="${this.stopRecording}">
             <img src="/assets/stop.svg" alt="stop icon">
