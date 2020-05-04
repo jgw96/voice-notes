@@ -38,7 +38,7 @@ export class AppHeader extends LitElement {
   render() {
     return html`
       <header>
-        <h1>Voice Notes</h1>
+        <h1>Memos</h1>
       </header>
     `;
   }

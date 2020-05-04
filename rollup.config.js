@@ -6,7 +6,7 @@ import strip from '@rollup/plugin-strip';
 import copy from 'rollup-plugin-copy';
 
 export default {
-  input: ['build/script/pages/app-index.js'],
+  input: ['build/script/script/pages/app-index.js'],
   output: {
     dir: 'dist/script/',
     format: 'es',

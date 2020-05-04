@@ -208,6 +208,8 @@ export class AppNew extends LitElement {
     this.recorded = null;
     this.recording = true;
 
+    (navigator as any).setAppBadge();
+
     const options = { mimeType: 'audio/webm' };
 
     if (this.stream) {
@@ -235,6 +237,8 @@ export class AppNew extends LitElement {
     const blob = new Blob(this.recordedChunks);
 
     this.recorded = blob;
+
+    (navigator as any).clearAppBadge();
   }
 
   runVisual(data: Uint8Array) {

@@ -113,7 +113,7 @@ export class AppHome extends LitElement {
         margin-top: 8em;
       }
 
-      #shareButton img {
+      #shareButton img, #downloadButton img {
         height: 20px;
       }
 
@@ -244,6 +244,22 @@ export class AppHome extends LitElement {
     }
   }
 
+  async download(i: Note) {
+    const opts = {
+      type: 'save-file',
+      accepts: [{
+        description: 'audio file',
+        extensions: ['weba'],
+        mimeTypes: ['audio/webm'],
+      }],
+    };
+    const handle = await (window as any).chooseFileSystemEntries(opts);
+
+    const writable = await handle.createWritable();
+    await writable.write(i.blob);
+    await writable.close();
+  }
+
   render() {
     return html`
     <app-header></app-header>
@@ -257,6 +273,7 @@ export class AppHome extends LitElement {
 
               <div id="listHeaderActions">
                 <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg" alt="share icon"></button>
+                <button id="downloadButton" @click="${() => this.download(i)}"><img src="/assets/save.svg" alt="Save icon"></button>
                 <button @click="${() => this.deleteNote(i)}"><img src="/assets/close.svg" alt="close icon"></button>
               </div>
             </div>
@@ -273,7 +290,7 @@ export class AppHome extends LitElement {
           </button>
         </div>
 
-        <pwa-install>Install Voice Notes</pwa-install>
+        <pwa-install>Install Memos</pwa-install>
       </div>
     `;
   }
