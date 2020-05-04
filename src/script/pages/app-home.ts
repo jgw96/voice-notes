@@ -4,11 +4,12 @@ import { Router } from '@vaadin/router';
 // For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
 import '@pwabuilder/pwainstall';
 import { get, set } from 'idb-keyval';
+import { Note } from '../../types/interfaces';
 
 @customElement('app-home')
 export class AppHome extends LitElement {
 
-  @property({ type: Array }) notes: any[] | null = null;
+  @property({ type: Array }) notes: Note[] | null = null;
 
   static get styles() {
     return css`
@@ -202,7 +203,7 @@ export class AppHome extends LitElement {
   }
 
   async firstUpdated() {
-    const notes: any[] = await get('notes');
+    const notes: Note[] = await get('notes');
 
     if (notes) {
       this.notes = notes;
@@ -213,10 +214,10 @@ export class AppHome extends LitElement {
     Router.go('/new');
   }
 
-  async deleteNote(i: any) {
-    const notes: any[] = await get('notes');
+  async deleteNote(i: Note) {
+    const notes: Note[] = await get('notes');
 
-    notes.forEach(async (note: any) => {
+    notes.forEach(async (note: Note) => {
       if (i.name === note.name) {
         const index = notes.indexOf(note);
 
@@ -231,9 +232,7 @@ export class AppHome extends LitElement {
     })
   }
 
-  async shareNote(note: any) {
-    console.log(note);
-
+  async shareNote(note: Note) {
     const file = new File([note.blob], note.name);
 
     if ((navigator as any).canShare && (navigator as any).canShare(file)) {

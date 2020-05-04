@@ -2,8 +2,7 @@ import { LitElement, css, html, customElement, property } from 'lit-element';
 import { Router } from '@vaadin/router';
 
 import { set, get } from 'idb-keyval';
-
-declare var MediaRecorder: any;
+import { Note } from '../../types/interfaces';
 
 @customElement('app-new')
 export class AppNew extends LitElement {
@@ -14,8 +13,8 @@ export class AppNew extends LitElement {
 
   analyser: AnalyserNode | null = null;
   stream: MediaStream | null = null;
-  recordedChunks: any[] = [];
-  mediaRecorder: any;
+  recordedChunks: Blob[] = [];
+  mediaRecorder: MediaRecorder | null = null;
 
   static get styles() {
     return css`
@@ -211,22 +210,25 @@ export class AppNew extends LitElement {
 
     const options = { mimeType: 'audio/webm' };
 
-    this.mediaRecorder = new MediaRecorder(this.stream, options);
+    if (this.stream) {
+      this.mediaRecorder = new MediaRecorder(this.stream, options);
+    }
 
-    this.mediaRecorder.ondataavailable = (event: any) => {
-      if (event.data.size > 0) {
-        this.recordedChunks.push(event.data);
-      }
-    };
-    this.mediaRecorder.start(1000);
-
+    if (this.mediaRecorder) {
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          this.recordedChunks.push(event.data);
+        }
+      };
+      this.mediaRecorder.start(1000);
+    }
   }
 
   stopRecording() {
     const track = this.stream?.getTracks()[0];
     track?.stop();
 
-    this.mediaRecorder.stop();
+    this.mediaRecorder?.stop();
 
     this.recording = false;
 
@@ -239,21 +241,14 @@ export class AppNew extends LitElement {
     const onscreenCanvas = this.shadowRoot?.querySelector('canvas')?.getContext('bitmaprenderer');
     const canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
 
-    console.log(canvas, onscreenCanvas);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+    const context = canvas.getContext('2d');
 
-    const context = canvas?.getContext('2d');
+    context?.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (canvas) {
-      context?.clearRect(0, 0, canvas.width, canvas.height);
-
-      this.draw(data, context, canvas, (onscreenCanvas as ImageBitmapRenderingContext));
-    }
-
+    this.draw(data, context, canvas, (onscreenCanvas as ImageBitmapRenderingContext));
   }
 
   draw(data: Uint8Array, context: any, canvas: OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext) {
@@ -282,10 +277,10 @@ export class AppNew extends LitElement {
   }
 
   async save() {
-    const notes: any[] = await get('notes');
+    const notes: Note[] = await get('notes');
 
-    if (notes) {
-      notes.push({ name: this.fileName, blob: this.recorded });
+    if (notes && this.recorded) {
+      notes.push({ name: this.fileName || "No name provided", blob: this.recorded });
       await set('notes', notes);
     }
     else {
@@ -296,7 +291,7 @@ export class AppNew extends LitElement {
   }
 
   handleInput(event: any) {
-    this.fileName = event.target.value;
+    this.fileName = event.target?.value;
   }
 
   close() {
@@ -318,10 +313,10 @@ export class AppNew extends LitElement {
 
       <canvas></canvas>
 
-        ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null }
+        ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null}
 
         ${
-          this.recorded ? html`<div id="audioDiv">
+      this.recorded ? html`<div id="audioDiv">
           <h3>New Note</h3>
 
           <input type="text" placeholder="note name..." @change="${this.handleInput}" .value="${this.fileName}">
@@ -330,7 +325,7 @@ export class AppNew extends LitElement {
 
           <button id="saveButton" @click="${this.save}">Save</button>
         </div>` : null
-        }
+      }
         
         <div id="toolbar">
           ${this.recording ? html`<span>Recording...</span>` : html`<span></span>`}
