@@ -166,7 +166,7 @@ export class AppNew extends LitElement {
 
       @media(prefers-color-scheme: dark) {
         #introText {
-          color: white;
+          color: white !important;
         }
 
         #audioDiv h3 {

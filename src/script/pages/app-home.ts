@@ -107,10 +107,19 @@ export class AppHome extends LitElement {
       #firstIntro {
         text-align: center;
         font-weight: bold;
+        margin-left: 3em;
+        margin-right: 3em;
+        font-size: 1.2em;
+        margin-top: 2em;
+      }
+
+      #secondIntro {
+        color: white;
         margin-left: 4em;
         margin-right: 4em;
-        font-size: 1.2em;
-        margin-top: 8em;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 4em;
       }
 
       #shareButton img, #downloadButton img {
@@ -279,7 +288,16 @@ export class AppHome extends LitElement {
             </div>
             <audio .src="${URL.createObjectURL(i.blob)}" controls>
           </li>`)}
-        </ul>` : html`<p id="firstIntro">Hit the button below to start a new note!</p>`}
+        </ul>` : html`<p id="firstIntro">
+          Quickly and easily record an audio memo for yourself,
+          tap the button below to start recording a new note!
+        </p>
+
+        <p id="secondIntro">
+          All notes are only stored locally on your device, leaving you in complete control of your data.
+        </p>
+        
+        `}
 
         <img id="introImg" src="/assets/intro.svg" alt="intro image">
 
