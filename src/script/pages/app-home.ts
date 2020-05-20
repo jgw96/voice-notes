@@ -161,7 +161,7 @@ export class AppHome extends LitElement {
       }
 
       @media(prefers-color-scheme: dark) {
-        #firstIntro {
+        #firstIntro, #secondIntro {
           color: white;
         }
       }
