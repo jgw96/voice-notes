@@ -2,6 +2,7 @@ import { LitElement, css, html, customElement, property } from 'lit-element';
 import { Note } from '../../types/interfaces';
 import { getMemo } from '../services/data';
 import { Router } from '@vaadin/router';
+import { set, get } from 'idb-keyval';
 
 
 @customElement('memo-detail')
@@ -87,16 +88,52 @@ export class MemoDetail extends LitElement {
     Router.go("/");
   }
 
-  shareNote(memo: Note | undefined) {
+  async shareNote(memo: Note | undefined) {
+    if (memo) {
+      const file = new File([memo.blob], memo.name);
 
+      if ((navigator as any).canShare && (navigator as any).canShare(file)) {
+        await (navigator as any).share({
+          file: file,
+          title: 'Note',
+          text: 'Check out this note',
+        })
+      }
+    }
   }
 
-  download(memo: Note | undefined) {
+  async download(memo: Note | undefined) {
+    const opts = {
+      type: 'save-file',
+      accepts: [{
+        description: 'audio file',
+        extensions: ['weba'],
+        mimeTypes: ['audio/webm'],
+      }],
+    };
+    const handle = await (window as any).chooseFileSystemEntries(opts);
 
+    const writable = await handle.createWritable();
+    await writable.write(memo?.blob);
+    await writable.close();
   }
 
-  deleteNote(memo: Note | undefined) {
+  async deleteNote(memo: Note | undefined) {
+    if (memo) {
+      const notes: Note[] = await get('notes');
 
+      notes.forEach(async (note: Note) => {
+        if (memo.name === note.name) {
+          const index = notes.indexOf(note);
+
+          if (index > -1) {
+            notes.splice(index, 1);
+
+            await set('notes', notes);
+          }
+        }
+      })
+    }
   }
 
   render() {
@@ -122,18 +159,18 @@ export class MemoDetail extends LitElement {
           <h4>Transcript</h4>
 
           ${
-            this.memo?.transcript ? html`
+      this.memo?.transcript ? html`
               <ul>
               ${
-                this.memo?.transcript.map((line) => {
-                  return html`
+        this.memo?.transcript.map((line) => {
+          return html`
                    <li>${line}</li>
                   `
-                })
-              }
+        })
+        }
               </ul>
             ` : null
-          }
+      }
         </div>
       </div>
     `;

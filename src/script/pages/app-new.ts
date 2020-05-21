@@ -221,7 +221,8 @@ export class AppNew extends LitElement {
 
     (window as any).requestIdleCallback(async () => {
       // speech to text
-      await import('/assets/speech.js');
+      //@ts-ignore
+      await (import('/assets/speech.js') as any);
 
       const audioConfig = (window as any).SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
       const speechConfig = (window as any).SpeechSDK.SpeechConfig.fromSubscription('45edad3ebc1149c89075a9bd75955b6b', 'westus');
