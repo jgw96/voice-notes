@@ -38,6 +38,13 @@ export class AppIndex extends LitElement {
               await import('./app-new.js');
             }
           },
+          {
+            path: "/memo/:name",
+            component: "memo-detail",
+            action: async () => {
+              await import('./memo-detail.js');
+            }
+          },
         ]
       }
     ]);

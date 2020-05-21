@@ -1,4 +1,5 @@
 export interface Note {
     name: string;
-    blob: Blob
+    blob: Blob,
+    transcript: string[];
 }

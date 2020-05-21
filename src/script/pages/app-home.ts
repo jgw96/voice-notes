@@ -86,6 +86,7 @@ export class AppHome extends LitElement {
         font-size: 18px;
         margin-bottom: 16px;
         margin-left: 4px;
+        width: 100%;
       }
 
       .listHeader {
@@ -269,6 +270,11 @@ export class AppHome extends LitElement {
     await writable.close();
   }
 
+  detail(memo: Note) {
+    console.log(memo);
+    Router.go(`memo/${memo.name}`)
+  }
+
   render() {
     return html`
     <app-header></app-header>
@@ -278,7 +284,7 @@ export class AppHome extends LitElement {
         ${this.notes && this.notes.length > 0 ? html`<ul>
           ${this.notes.map(i => html`<li>
             <div class="listHeader">
-              <h5>${i.name}</h5>
+              <h5 @click="${() => this.detail(i)}">${i.name}</h5>
 
               <div id="listHeaderActions">
                 <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg" alt="share icon"></button>

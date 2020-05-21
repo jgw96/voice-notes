@@ -10,11 +10,14 @@ export class AppNew extends LitElement {
   @property({ type: Boolean }) recording: boolean = false;
   @property({ type: Blob }) recorded: Blob | null = null;
   @property({ type: String }) fileName: string | null = null;
+  @property({ type: String }) transcript: string | null = null;
 
   analyser: AnalyserNode | null = null;
   stream: MediaStream | null = null;
   recordedChunks: Blob[] = [];
   mediaRecorder: MediaRecorder | null = null;
+  recog: any;
+  lines: any[] = [];
 
   static get styles() {
     return css`
@@ -129,7 +132,7 @@ export class AppNew extends LitElement {
         background: transparent;
         position: fixed;
         top: 8px;
-        left: 6px;
+        right: 6px;
       }
 
       #backButton img {
@@ -146,6 +149,19 @@ export class AppNew extends LitElement {
         left: 0;
         right: 0;
         z-index: -1;
+      }
+
+      #transcript {
+        position: fixed;
+        top: 8em;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        text-align: center;
       }
 
       @media(max-width: 800px) {
@@ -202,6 +218,47 @@ export class AppNew extends LitElement {
     const dataArray = new Uint8Array(bufferLength);
 
     this.runVisual(dataArray);
+
+    (window as any).requestIdleCallback(async () => {
+      // speech to text
+      await import('/assets/speech.js');
+
+      const audioConfig = (window as any).SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+      const speechConfig = (window as any).SpeechSDK.SpeechConfig.fromSubscription('45edad3ebc1149c89075a9bd75955b6b', 'westus');
+
+      speechConfig.speechRecognitionLanguage = 'en-us';
+
+      this.recog = new (window as any).SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+
+      console.log(this.recog);
+
+      this.setUpListeners();
+    })
+  }
+
+  setUpListeners() {
+    this.lines = [];
+
+    if (this.recog) {
+      this.recog.recognizing = (s?: any, e?: any) => {
+        console.log(s);
+        window.console.log(e.result);
+
+        if ('requestIdleCallback' in window) {
+          // Use requestIdleCallback to schedule work.
+          (window as any).requestIdleCallback(() => {
+            this.transcript = e.result.text;
+          });
+        }
+      };
+
+      this.recog.recognized = (s?: any, e?: any) => {
+        console.log(s);
+        console.log('recognized', e.result.text);
+
+        this.lines.push(e.result.text);
+      }
+    }
   }
 
   async startRecording() {
@@ -224,6 +281,8 @@ export class AppNew extends LitElement {
       };
       this.mediaRecorder.start(1000);
     }
+
+    this.recog.startContinuousRecognitionAsync();
   }
 
   stopRecording() {
@@ -231,6 +290,8 @@ export class AppNew extends LitElement {
     track?.stop();
 
     this.mediaRecorder?.stop();
+
+    this.recog.stopContinuousRecognitionAsync();
 
     this.recording = false;
 
@@ -284,11 +345,11 @@ export class AppNew extends LitElement {
     const notes: Note[] = await get('notes');
 
     if (notes && this.recorded) {
-      notes.push({ name: this.fileName || "No name provided", blob: this.recorded });
+      notes.push({ name: this.fileName || "No name provided", blob: this.recorded, transcript: this.lines });
       await set('notes', notes);
     }
     else {
-      await set('notes', [{ name: this.fileName, blob: this.recorded }]);
+      await set('notes', [{ name: this.fileName, blob: this.recorded, transcript: this.lines }]);
     }
 
     Router.go('/');
@@ -301,6 +362,8 @@ export class AppNew extends LitElement {
   close() {
     const track = this.stream?.getTracks()[0];
     track?.stop();
+
+    this.recog.stopContinuousRecognitionAsync();
 
     Router.go('/');
   }
@@ -316,6 +379,8 @@ export class AppNew extends LitElement {
       <div>
 
       <canvas></canvas>
+
+      ${this.transcript && this.recording ? html`<span id="transcript">${this.transcript}</span>` : null}
 
         ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null}
 
