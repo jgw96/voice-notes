@@ -56,6 +56,7 @@ export class AppHome extends LitElement {
         align-items: center;
         display: flex;
         padding-right: 16px;
+        z-index: 9999;
       }
 
       ul {
