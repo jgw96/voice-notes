@@ -360,6 +360,7 @@ export class AppNew extends LitElement {
       this.wakeLock.release();
     }
 
+    (navigator as any).clearAppBadge();
 
     Router.go('/');
   }
