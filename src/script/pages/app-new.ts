@@ -18,6 +18,7 @@ export class AppNew extends LitElement {
   mediaRecorder: MediaRecorder | null = null;
   recog: any;
   lines: any[] = [];
+  wakeLock: any = null;
 
   static get styles() {
     return css`
@@ -283,6 +284,8 @@ export class AppNew extends LitElement {
       this.mediaRecorder.start(1000);
     }
 
+    await this.requestWakeLock();
+
     this.recog.startContinuousRecognitionAsync();
   }
 
@@ -353,6 +356,11 @@ export class AppNew extends LitElement {
       await set('notes', [{ name: this.fileName, blob: this.recorded, transcript: this.lines }]);
     }
 
+    if (this.wakeLock) {
+      this.wakeLock.release();
+    }
+
+
     Router.go('/');
   }
 
@@ -360,11 +368,24 @@ export class AppNew extends LitElement {
     this.fileName = event.target?.value;
   }
 
+  async requestWakeLock() {
+    try {
+      this.wakeLock = await (navigator as any).wakeLock.request('screen');
+      console.log('Wake Lock is active');
+    } catch (err) {
+      console.error(`${err.name}, ${err.message}`);
+    }
+  };
+
   close() {
     const track = this.stream?.getTracks()[0];
     track?.stop();
 
     this.recog.stopContinuousRecognitionAsync();
+
+    if (this.wakeLock) {
+      this.wakeLock.release();
+    }
 
     Router.go('/');
   }

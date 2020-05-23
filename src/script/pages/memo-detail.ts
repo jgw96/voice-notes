@@ -126,6 +126,16 @@ export class MemoDetail extends LitElement {
         border: solid 2px var(--app-color-primary);
       }
 
+      ul {
+        background: #444444;
+        border-radius: 4px;
+        padding-left: 2em;
+        padding-top: 1em;
+        padding-bottom: 0.6em;
+        padding-right: 2em;
+        margin-right: 1em;
+      }
+
       @keyframes slideup {
         from {
           transform: translateY(50px);
@@ -292,7 +302,7 @@ export class MemoDetail extends LitElement {
                 <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
           </div>
 
-          ${this.memo ?.transcript && this.memo ?.transcript.length > 1 ? html`<h4>Transcript</h4>` : null}
+          ${this.memo ?.transcript && this.memo ?.transcript.length > 0 ? html`<h4>Transcript</h4>` : null}
 
           ${
       this.memo ?.transcript ? html`
