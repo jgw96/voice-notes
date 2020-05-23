@@ -305,10 +305,10 @@ export class MemoDetail extends LitElement {
           ${this.memo ?.transcript && this.memo ?.transcript.length > 0 ? html`<h4>Transcript</h4>` : null}
 
           ${
-      this.memo ?.transcript ? html`
+      this.memo?.transcript && this.memo?.transcript.length > 0 ? html`
               <ul>
               ${
-        this.memo ?.transcript.map((line: any) => {
+        this.memo?.transcript.map((line: any) => {
           return html`
                    <li>${line}</li>
                   `

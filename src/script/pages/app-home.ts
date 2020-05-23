@@ -67,7 +67,8 @@ export class AppHome extends LitElement {
       }
 
       ul li {
-        background: var(--app-color-primary);
+        background: #686bd2bd;
+        backdrop-filter: blur(10px);
         color: white;
         padding-left: 12px;
         padding-right: 12px;
@@ -143,6 +144,8 @@ export class AppHome extends LitElement {
         position: fixed;
         bottom: 3.6em;
         right: 0;
+
+        z-index: -1;
       }
 
       #detailBlock {
@@ -341,9 +344,6 @@ export class AppHome extends LitElement {
         </p>
         
         `}
-
-        <img id="introImg" src="/assets/intro.svg" alt="intro image">
-
         <div id="toolbar">
           <button @click="${this.newNote}" id="newButton">
             New Note
@@ -353,6 +353,9 @@ export class AppHome extends LitElement {
 
         <pwa-install>Install Memos</pwa-install>
       </div>
+
+      <img id="introImg" src="/assets/intro.svg" alt="intro image">
+
     `;
   }
 }
