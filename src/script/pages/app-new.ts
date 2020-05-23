@@ -226,7 +226,7 @@ export class AppNew extends LitElement {
       await (import('/assets/speech.js') as any);
 
       const audioConfig = (window as any).SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-      const speechConfig = (window as any).SpeechSDK.SpeechConfig.fromSubscription('45edad3ebc1149c89075a9bd75955b6b', 'westus');
+      const speechConfig = (window as any).SpeechSDK.SpeechConfig.fromSubscription('94691c9f125a497b917e0c60eeec9197', 'westus');
 
       speechConfig.speechRecognitionLanguage = 'en-us';
 

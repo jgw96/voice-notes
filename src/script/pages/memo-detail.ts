@@ -134,6 +134,7 @@ export class MemoDetail extends LitElement {
         padding-bottom: 0.6em;
         padding-right: 2em;
         margin-right: 1em;
+        width: fit-content;
       }
 
       @keyframes slideup {

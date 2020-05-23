@@ -12,7 +12,37 @@ export class AppIndex extends LitElement {
 
   static get styles() {
     return css`
+      #routerOutlet memo-detail, #routerOutlet app-home {
+        width: 100% !important;
+      }
 
+      #routerOutlet > .leaving {
+        animation: 160ms fadeOut ease-in-out;
+      }
+    
+      #routerOutlet > .entering {
+        animation: 160ms fadeIn linear;
+      }
+    
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+    
+        to {
+          opacity: 0;
+        }
+      }
+    
+      @keyframes fadeIn {
+        from {
+          opacity: 0.2;
+        }
+    
+        to {
+          opacity: 1;
+        }
+      }
     `;
   }
 
@@ -24,8 +54,9 @@ export class AppIndex extends LitElement {
     // For more info on using the @vaadin/router check here https://vaadin.com/router
     const router = new Router(this.shadowRoot?.querySelector('#routerOutlet'));
     router.setRoutes([
-      {
+      ({
         path: "",
+        animate: true,
         children: [
           {
             path: "/",
@@ -46,7 +77,7 @@ export class AppIndex extends LitElement {
             }
           },
         ]
-      }
+      } as any)
     ]);
   }
 
