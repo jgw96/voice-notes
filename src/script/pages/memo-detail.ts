@@ -4,11 +4,17 @@ import { getMemo } from '../services/data';
 import { Router } from '@vaadin/router';
 import { set, get } from 'idb-keyval';
 
+import "../components/app-toast";
+
+declare var TimestampTrigger: any;
+
 
 @customElement('memo-detail')
 export class MemoDetail extends LitElement {
 
   @property() memo: Note | undefined = undefined;
+  @property() reminderTime: any = null;
+  @property({ type: Boolean }) showToast: boolean = false;
 
   static get styles() {
     return css`
@@ -82,6 +88,44 @@ export class MemoDetail extends LitElement {
         font-size: 20px;
       }
 
+      #reminder {
+        display: flex;
+        flex-direction: column;
+        width: 18em;
+        margin-top: 1em;
+        font-size: 17px;
+      }
+
+      #reminder label{
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      #reminder button{
+        color: var(--app-color-primary);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 4em;
+        background: none;
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--app-color-primary);
+        border-image: initial;
+        border-radius: 2px;
+        padding: 6px 9px;
+        margin-top: 1em;
+        align-self: flex-end;
+      }
+
+      input {
+        padding: 8px;
+        color: var(--app-color-primary);
+        border-radius: 4px;
+        border: solid 2px var(--app-color-primary);
+      }
+
       @keyframes slideup {
         from {
           transform: translateY(50px);
@@ -145,8 +189,11 @@ export class MemoDetail extends LitElement {
     const handle = await (window as any).chooseFileSystemEntries(opts);
 
     const writable = await handle.createWritable();
-    await writable.write(memo?.blob);
-    await writable.close();
+
+    if (memo) {
+      await writable.write(memo.blob);
+      await writable.close();
+    }
   }
 
   async deleteNote(memo: Note | undefined) {
@@ -167,6 +214,55 @@ export class MemoDetail extends LitElement {
     }
   }
 
+  handleDate(event: any) {
+    console.log(event.target.value);
+    this.reminderTime = event.target.value;
+  }
+
+  askPermission() {
+    return new Promise(function (resolve, reject) {
+      const permissionResult = Notification.requestPermission(function (result) {
+        resolve(result);
+      });
+
+      if (permissionResult) {
+        permissionResult.then(resolve, reject);
+      }
+    })
+      .then(function (permissionResult) {
+        if (permissionResult !== 'granted') {
+          throw new Error('We weren\'t granted permission.');
+        }
+      });
+  }
+
+  async setReminder() {
+    try {
+      await this.askPermission();
+
+      const r: any = await navigator.serviceWorker.getRegistration();
+      console.log(r);
+
+      if (r) {
+        r.showNotification("Memos Reminder", {
+          tag: Math.random(),
+          body: `Your reminder from Memos: ${location.href}`,
+          showTrigger: new TimestampTrigger(Date.now() + (new Date(this.reminderTime).getTime() - Date.now())),
+          icon: "/assets/icons/icon_256.png"
+        });
+
+        this.showToast = true;
+
+        setTimeout(() => {
+          this.showToast = false;
+        }, 3000)
+      };
+    }
+    catch {
+      console.log("couldnt set reminder");
+    }
+  }
+
   render() {
     return html`
       <div>
@@ -177,9 +273,18 @@ export class MemoDetail extends LitElement {
         </header>
 
         <div id="nameBlock">
-          <h2>${this.memo?.name}</h2>
+          <h2>${this.memo ?.name}</h2>
 
-          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
+          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo ?.blob)}" controls>` : null}
+
+          <div id="reminder">
+            <label for="reminder-time">Set a Reminder:</label>
+
+            <input type="datetime-local" id="reminder-time"
+                  name="reminder-time" @change="${this.handleDate}" .value="${this.reminderTime}">
+
+            <button @click="${() => this.setReminder()}">Set</button>
+          </div>
 
           <div id="detailActions">
                 <button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></button>
@@ -187,13 +292,13 @@ export class MemoDetail extends LitElement {
                 <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
           </div>
 
-          ${this.memo?.transcript && this.memo?.transcript.length > 1 ? html`<h4>Transcript</h4>` : null}
+          ${this.memo ?.transcript && this.memo ?.transcript.length > 1 ? html`<h4>Transcript</h4>` : null}
 
           ${
-      this.memo?.transcript ? html`
+      this.memo ?.transcript ? html`
               <ul>
               ${
-        this.memo?.transcript.map((line: any) => {
+        this.memo ?.transcript.map((line: any) => {
           return html`
                    <li>${line}</li>
                   `
@@ -204,6 +309,8 @@ export class MemoDetail extends LitElement {
       }
         </div>
       </div>
+
+      ${this.showToast ? html`<app-toast>reminder set</app-toast>` : null}
     `;
   }
 }

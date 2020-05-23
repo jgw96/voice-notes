@@ -9,5 +9,3 @@ self.addEventListener("message", (event) => {
 self.addEventListener('notificationclick', (event) => {
   clients.openWindow(event.notification.body.split("Memos: ").pop());
 })
-
-workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
