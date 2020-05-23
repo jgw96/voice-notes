@@ -260,7 +260,7 @@ export class AppHome extends LitElement {
       type: 'save-file',
       accepts: [{
         description: 'audio file',
-        extensions: ['weba'],
+        extensions: ['webm'],
         mimeTypes: ['audio/webm'],
       }],
     };
