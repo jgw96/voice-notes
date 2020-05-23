@@ -40,35 +40,66 @@ export class MemoDetail extends LitElement {
         margin-bottom: 10px;
       }
 
-      #listHeaderActions {
+      #detailActions {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        margin-top: 14px;
+
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        justify-content: space-evenly;
+        left: 0;
+        right: 0;
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        background: var(--app-color-primary);
+
+        animation-name: slideup;
+        animation-duration: 300ms;
       }
 
-      #listHeaderActions button {
-        background: transparent;
-        border: none;
-        padding: 8px;
-        display: flex;
-        align-items: center;
+      #detailActions button {
+        background: none;
+        border: solid 1px white;
+        border-radius: 2px;
         color: white;
-        font-weight: bold;
-        font-size: 16px;
-        width: 5.6em;
+        text-transform: uppercase;
+
+        display: flex;
+        align-items: center;
         justify-content: space-between;
-        border: solid var(--app-color-primary);
-        border-radius: 8px;
-        margin-right: 12px;
+        width: 7.6em;
+        padding: 6px 9px;
       }
 
-      #listHeaderActions img {
+      #detailActions img {
         width: 24px;
       }
 
-      h4 {
-        font-size: 1.2em;
+      h2 {
+        font-size: 20px;
+      }
+
+      @keyframes slideup {
+        from {
+          transform: translateY(50px);
+        }
+
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      @media (min-width: 1000px) {
+        #detailActions {
+          justify-content: flex-end;
+        }
+
+        #detailActions button {
+          margin-right: 1em;
+        }
       }
 
     `;
@@ -150,19 +181,19 @@ export class MemoDetail extends LitElement {
 
           ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
 
-          <div id="listHeaderActions">
+          <div id="detailActions">
                 <button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></button>
                 <button id="downloadButton" @click="${() => this.download(this.memo)}">Save <img src="/assets/save.svg" alt="Save icon"></button>
                 <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
           </div>
 
-          <h4>Transcript</h4>
+          ${this.memo?.transcript && this.memo?.transcript.length > 1 ? html`<h4>Transcript</h4>` : null}
 
           ${
       this.memo?.transcript ? html`
               <ul>
               ${
-        this.memo?.transcript.map((line) => {
+        this.memo?.transcript.map((line: any) => {
           return html`
                    <li>${line}</li>
                   `

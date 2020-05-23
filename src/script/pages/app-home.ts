@@ -76,6 +76,9 @@ export class AppHome extends LitElement {
         border-radius: 16px;
 
         margin-bottom: 1em;
+
+        animation-name: slidein;
+        animation-duration: 300ms;
       }
 
       ul li audio {
@@ -88,6 +91,7 @@ export class AppHome extends LitElement {
         margin-bottom: 16px;
         margin-left: 4px;
         width: 100%;
+        cursor: pointer;
       }
 
       .listHeader {
@@ -139,6 +143,34 @@ export class AppHome extends LitElement {
         position: fixed;
         bottom: 3.6em;
         right: 0;
+      }
+
+      #detailBlock {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+
+      #detailBlock button{
+        color: var(--app-color-primary);
+        background: white;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 6px;
+      }
+
+      @keyframes slidein {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
 
       @keyframes slideup {
@@ -271,7 +303,7 @@ export class AppHome extends LitElement {
     await writable.close();
   }
 
-  detail(memo: Note) {
+  async detail(memo: Note) {
     console.log(memo);
     Router.go(`memo/${memo.name}`)
   }
@@ -293,7 +325,11 @@ export class AppHome extends LitElement {
                 <button @click="${() => this.deleteNote(i)}"><img src="/assets/close.svg" alt="close icon"></button>
               </div>
             </div>
-            <audio .src="${URL.createObjectURL(i.blob)}" controls>
+            <audio .src="${URL.createObjectURL(i.blob)}" controls></audio>
+
+            <div id="detailBlock">
+              <button @click="${() => this.detail(i)}">Details</button>
+            </div>
           </li>`)}
         </ul>` : html`<p id="firstIntro">
           Quickly and easily record an audio memo for yourself,
@@ -310,8 +346,8 @@ export class AppHome extends LitElement {
 
         <div id="toolbar">
           <button @click="${this.newNote}" id="newButton">
-            <img src="/assets/plus.svg" alt="add icon">
             New Note
+            <img src="/assets/plus.svg" alt="add icon">
           </button>
         </div>
 
