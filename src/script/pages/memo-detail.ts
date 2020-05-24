@@ -13,7 +13,7 @@ declare var TimestampTrigger: any;
 export class MemoDetail extends LitElement {
 
   @property() memo: Note | undefined = undefined;
-  @property() reminderTime: any = null;
+  @property() reminderTime: any = Date.now();
   @property({ type: Boolean }) showToast: boolean = false;
 
   static get styles() {
@@ -22,8 +22,8 @@ export class MemoDetail extends LitElement {
         border: none;
         background: transparent;
         position: fixed;
-        top: 16px;
         right: 6px;
+        top: 12px;
       }
 
       #backButton img {
@@ -31,7 +31,6 @@ export class MemoDetail extends LitElement {
       }
 
       #nameBlock {
-        color: white;
         font-size: 16px;
         margin-left: 16px;
       }
@@ -67,10 +66,10 @@ export class MemoDetail extends LitElement {
       }
 
       #detailActions button {
+        color: white;
         background: none;
         border: solid 1px white;
         border-radius: 2px;
-        color: white;
         text-transform: uppercase;
 
         display: flex;
@@ -144,6 +143,28 @@ export class MemoDetail extends LitElement {
 
         to {
           transform: translateY(0);
+        }
+      }
+
+      @media(prefers-color-scheme: dark) {
+        #nameBlock {
+          color: white;
+        }
+
+        #detailActions button {
+          color: white;
+        }
+      }
+
+      @media(prefers-color-scheme: light) {
+        #backButton {
+          background: #bbbbbb;
+          border-radius: 50%;
+          height: 3em;
+          width: 3em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
 

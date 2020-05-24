@@ -12,7 +12,7 @@ export class AppIndex extends LitElement {
 
   static get styles() {
     return css`
-      #routerOutlet memo-detail, #routerOutlet app-home {
+      #routerOutlet memo-detail, #routerOutlet app-home, #routerOutlet app-new {
         width: 100% !important;
       }
 

@@ -140,6 +140,18 @@ export class AppNew extends LitElement {
         height: 30px;
       }
 
+      @media(prefers-color-scheme: light) {
+        #backButton {
+          background: #bbbbbb;
+          border-radius: 50%;
+          height: 3em;
+          width: 3em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
       canvas {
         height: 100vh;
         width: 100%;
