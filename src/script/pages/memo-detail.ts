@@ -13,7 +13,7 @@ declare var TimestampTrigger: any;
 export class MemoDetail extends LitElement {
 
   @property() memo: Note | undefined = undefined;
-  @property() reminderTime: any = Date.now();
+  @property() reminderTime: any = new Date().toLocaleTimeString();
   @property({ type: Boolean }) showToast: boolean = false;
 
   static get styles() {
@@ -165,6 +165,10 @@ export class MemoDetail extends LitElement {
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+
+        ul {
+          background: lightgrey;
         }
       }
 
@@ -324,7 +328,7 @@ export class MemoDetail extends LitElement {
                 <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
           </div>
 
-          ${this.memo ?.transcript && this.memo ?.transcript.length > 0 ? html`<h4>Transcript</h4>` : null}
+          ${this.memo?.transcript && this.memo?.transcript.length > 0 ? html`<h4>Transcript</h4>` : null}
 
           ${
       this.memo?.transcript && this.memo?.transcript.length > 0 ? html`
