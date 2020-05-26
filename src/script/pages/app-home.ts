@@ -356,7 +356,7 @@ export class AppHome extends LitElement {
         <pwa-install>Install Memos</pwa-install>
       </div>
 
-      <img id="introImg" src="/assets/intro.webp" alt="intro image">
+      ${(navigator as any).connection ? html`${(navigator as any).connection.effectiveType !== "3g" || "2g" || "slow 2g" ? html`<img id="introImg" src="/assets/intro.webp" alt="intro image">` : null}` : html`<img id="introImg" src="/assets/intro.webp" alt="intro image">`}
 
     `;
   }
