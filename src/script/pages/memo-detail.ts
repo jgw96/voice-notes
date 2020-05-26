@@ -77,6 +77,7 @@ export class MemoDetail extends LitElement {
         justify-content: space-between;
         width: 7.6em;
         padding: 6px 9px;
+        cursor: pointer;
       }
 
       #detailActions img {
