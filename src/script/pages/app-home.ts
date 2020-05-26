@@ -356,7 +356,7 @@ export class AppHome extends LitElement {
         <pwa-install>Install Memos</pwa-install>
       </div>
 
-      <img id="introImg" src="/assets/intro.svg" alt="intro image">
+      <img id="introImg" src="/assets/intro.webp" alt="intro image">
 
     `;
   }
