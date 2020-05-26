@@ -270,7 +270,9 @@ export class AppNew extends LitElement {
         console.log(s);
         console.log('recognized', e.result.text);
 
-        this.lines.push(e.result.text);
+        if (e.result.text && e.result.text.length > 0) {
+          this.lines.push(e.result.text);
+        }
       }
     }
   }
