@@ -313,6 +313,22 @@ export class AppHome extends LitElement {
     Router.go(`memo/${memo.name}`)
   }
 
+  checkConnection() {
+    if ((navigator as any).connection) {
+      const type = (navigator as any).connection.effectiveType;
+
+      if (type === "4g") {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+  }
+
   render() {
     return html`
     <app-header></app-header>
@@ -356,7 +372,7 @@ export class AppHome extends LitElement {
         <pwa-install>Install Memos</pwa-install>
       </div>
 
-      ${(navigator as any).connection ? html`${(navigator as any).connection.effectiveType !== "3g" || "2g" || "slow 2g" ? html`<img id="introImg" src="/assets/intro.webp" alt="intro image">` : null}` : html`<img id="introImg" src="/assets/intro.webp" alt="intro image">`}
+      ${(navigator as any).connection ? html`${this.checkConnection() === true ? html`<img id="introImg" src="/assets/intro.webp" alt="intro image">` : null}` : html`<img id="introImg" src="/assets/intro.webp" alt="intro image">`}
 
     `;
   }
