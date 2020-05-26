@@ -17,5 +17,6 @@ jobs:
           urls: |
             https://zealous-field-017390e1e.azurestaticapps.net/
           budgetPath: ./budget.json # test performance budgets
+          configPath: './lighthouserc.json'
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: true
