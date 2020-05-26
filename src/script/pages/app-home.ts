@@ -77,7 +77,9 @@ export class AppHome extends LitElement {
         border-radius: 16px;
 
         margin-bottom: 1em;
+      }
 
+      ul li:nth-child(-n+4) {
         animation-name: slidein;
         animation-duration: 300ms;
       }
