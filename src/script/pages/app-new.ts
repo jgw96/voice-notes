@@ -219,7 +219,7 @@ export class AppNew extends LitElement {
       audio: true
     });
 
-    const audioContext = new window.AudioContext();
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const source = audioContext.createMediaStreamSource(this.stream);
 
     this.analyser = audioContext.createAnalyser();

@@ -325,7 +325,7 @@ export class AppHome extends LitElement {
       }
     }
     else {
-      return false;
+      return true;
     }
   }
 
