@@ -13,7 +13,7 @@ declare var TimestampTrigger: any;
 export class MemoDetail extends LitElement {
 
   @property() memo: Note | undefined = undefined;
-  @property() reminderTime: any = new Date().toLocaleTimeString();
+  @property({ type: String }) reminderTime: string;
   @property({ type: Boolean }) showToast: boolean = false;
 
   static get styles() {
@@ -77,6 +77,7 @@ export class MemoDetail extends LitElement {
         justify-content: space-between;
         width: 7.6em;
         padding: 6px 9px;
+        cursor: pointer;
       }
 
       #detailActions img {
@@ -146,12 +147,26 @@ export class MemoDetail extends LitElement {
         }
       }
 
+      @keyframes slidedown {
+        from {
+          transform: translateY(-50px);
+        }
+
+        to {
+          transform: translateY(0);
+        }
+      }
+
       @media(prefers-color-scheme: dark) {
         #nameBlock {
           color: white;
         }
 
         #detailActions button {
+          color: white;
+        }
+
+        #reminder button {
           color: white;
         }
       }
@@ -175,10 +190,39 @@ export class MemoDetail extends LitElement {
       @media (min-width: 1000px) {
         #detailActions {
           justify-content: flex-end;
+
+          top: 0;
+          bottom: initial;
+
+          animation-name: slidedown;
         }
 
         #detailActions button {
           margin-right: 1em;
+        }
+
+        #nameBlock {
+          margin-top: 5em;
+        }
+
+        #backButton {
+          height: 4.35em;
+          background: #686bd2;
+          top: 0;
+          width: 4em;
+
+          left: 0;
+          z-index: 1;
+          cursor: pointer;
+          background: #5759af;
+
+          animation-name: slidedown;
+          animation-duration: 300ms;
+        }
+
+        #nameBlock {
+          padding-left: 12em;
+          padding-right: 12em;
         }
       }
 
@@ -187,6 +231,8 @@ export class MemoDetail extends LitElement {
 
   constructor() {
     super();
+
+    this.reminderTime = new Date().toISOString();
   }
 
   async firstUpdated() {

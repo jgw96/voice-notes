@@ -77,7 +77,9 @@ export class AppHome extends LitElement {
         border-radius: 16px;
 
         margin-bottom: 1em;
+      }
 
+      ul li:nth-child(-n+4) {
         animation-name: slidein;
         animation-duration: 300ms;
       }
@@ -311,6 +313,22 @@ export class AppHome extends LitElement {
     Router.go(`memo/${memo.name}`)
   }
 
+  checkConnection() {
+    if ((navigator as any).connection) {
+      const type = (navigator as any).connection.effectiveType;
+
+      if (type === "4g") {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+  }
+
   render() {
     return html`
     <app-header></app-header>
@@ -354,7 +372,7 @@ export class AppHome extends LitElement {
         <pwa-install>Install Memos</pwa-install>
       </div>
 
-      <img id="introImg" src="/assets/intro.svg" alt="intro image">
+      ${(navigator as any).connection ? html`${this.checkConnection() === true ? html`<img id="introImg" src="/assets/intro.webp" alt="intro image">` : null}` : html`<img id="introImg" src="/assets/intro.webp" alt="intro image">`}
 
     `;
   }

@@ -1,0 +1,22 @@
+name: Lighthouse
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: |
+            https://zealous-field-017390e1e.azurestaticapps.net/
+          budgetPath: ./budget.json # test performance budgets
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true # save results as an action artifacts
+          temporaryPublicStorage: true
