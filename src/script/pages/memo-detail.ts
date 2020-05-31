@@ -15,6 +15,10 @@ export class MemoDetail extends LitElement {
   @property() memo: Note | undefined = undefined;
   @property({ type: String }) reminderTime: string;
   @property({ type: Boolean }) showToast: boolean = false;
+  @property({ type: Boolean }) showOneToast: boolean = false;
+  @property({ type: Boolean }) showErrorToast: boolean = false;
+
+  fileToUpload: any;
 
   static get styles() {
     return css`
@@ -24,6 +28,12 @@ export class MemoDetail extends LitElement {
         position: fixed;
         right: 6px;
         top: 12px;
+      }
+
+      @media(min-width: 800px) {
+        #backButton {
+          border-radius: 0px !important;
+        }
       }
 
       #backButton img {
@@ -88,12 +98,27 @@ export class MemoDetail extends LitElement {
         font-size: 20px;
       }
 
-      #reminder {
+      #reminder, #exportToOnedrive {
         display: flex;
         flex-direction: column;
         width: 18em;
         margin-top: 1em;
         font-size: 17px;
+      }
+
+      #exportToOnedrive {
+        align-items: flex-end;
+        margin-top: 2em;
+      }
+
+      #exportToOnedrive button {
+        background: var(--app-color-primary);
+        color: white;
+        border-radius: 4px;
+        padding: 8px;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
       }
 
       #reminder label{
@@ -345,6 +370,36 @@ export class MemoDetail extends LitElement {
     }
   }
 
+  async export() {
+    try {
+      let provider = (window as any).mgt.Providers.globalProvider;
+
+      console.log(provider);
+      if (provider) {
+        let graphClient = provider.graph.client;
+        const driveItem = await graphClient.api('/me/drive/root/children').middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).post({
+          "name": "memosapp",
+          "folder": {}
+        });
+
+        this.fileToUpload = await graphClient.api(`/me/drive/items/${driveItem.id}:/${this.memo?.name}.weba:/content`).middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).put(this.memo?.blob);
+
+        this.showOneToast = true;
+
+        setTimeout(() => {
+          this.showOneToast = false;
+        }, 1400)
+      }
+    }
+    catch (err) {
+      this.showErrorToast = true;
+
+      setTimeout(() => {
+        this.showErrorToast = false;
+      }, 3000)
+    }
+  }
+
   render() {
     return html`
       <div>
@@ -355,9 +410,9 @@ export class MemoDetail extends LitElement {
         </header>
 
         <div id="nameBlock">
-          <h2>${this.memo ?.name}</h2>
+          <h2>${this.memo?.name}</h2>
 
-          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo ?.blob)}" controls>` : null}
+          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
 
           <div id="reminder">
             <label for="reminder-time">Set a Reminder:</label>
@@ -366,6 +421,10 @@ export class MemoDetail extends LitElement {
                   name="reminder-time" @change="${this.handleDate}" .value="${this.reminderTime}">
 
             <button @click="${() => this.setReminder()}">Set</button>
+          </div>
+
+          <div id="exportToOnedrive">
+            <button @click="${this.export}">Export To OneDrive</button>
           </div>
 
           <div id="detailActions">
@@ -393,6 +452,10 @@ export class MemoDetail extends LitElement {
       </div>
 
       ${this.showToast ? html`<app-toast>reminder set</app-toast>` : null}
+
+      ${this.showOneToast ? html`<app-toast>Exported to OneDrive <a .href="${this.fileToUpload.webUrl}">Link</a></app-toast>` : null}
+
+      ${this.showErrorToast ? html`<app-toast>Must be signed in</app-toast>` : null}
     `;
   }
 }
