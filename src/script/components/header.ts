@@ -1,8 +1,5 @@
 import { LitElement, css, html, customElement, property } from 'lit-element';
 
-import '@pwabuilder/pwaauth';
-import { set } from 'idb-keyval';
-
 @customElement('app-header')
 export class AppHeader extends LitElement {
 
@@ -27,26 +24,23 @@ export class AppHeader extends LitElement {
         font-weight: bold;
       }
 
-      pwa-auth {
-        margin-right: 9em;
+      mgt-login {
+        margin-right: 8em;
+        z-index: 999999;
+        --color: white;
       }
 
-      pwa-auth::part(signInButton) {
-        background: none;
-        border: solid 1px;
-        border-radius: 2px;
+      #nameSpan {
+        margin-right: 8em;
+        background: var(--app-color-primary);
         padding: 6px;
-        padding-left: 12px;
-        padding-right: 12px;
-        text-transform: uppercase;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        border-radius: 22px;
+        padding-left: 16px;
+        padding-right: 16px;
       }
 
       @media (max-width: 800px) {
-        pwa-auth {
+        mgt-login {
           margin-right: 0em;
         }
       }
@@ -56,8 +50,12 @@ export class AppHeader extends LitElement {
           color: white;
         }
 
-        pwa-auth::part(signInButton) {
-          color: white;
+        mgt-login {
+          --popup-content-background-color: #292929;
+          --popup-color: white;
+          --color: white;
+          --background-color--hover: #444444;
+          --color-hover: white;
         }
       }
     `;
@@ -67,28 +65,13 @@ export class AppHeader extends LitElement {
     super();
   }
 
-  async firstUpdated() {
-    this.shadowRoot?.querySelector('pwa-auth')?.addEventListener('signin-completed', async (e: any) => {
-      console.log(e.detail);
-
-      if (e.detail.providerData) {
-        await set('local', e.detail.providerData)
-      }
-
-      this.username = e.detail.name;
-    })
-  }
-
   render() {
     return html`
       <header>
         <h1>Memos</h1>
 
-        ${this.username && this.username.length > 1 ? html`<span>${this.username}</span>` : html`<pwa-auth 
-          microsoftkey="e7e2eedb-420c-4034-8f16-a6cd4e3c81b5"
-          credentialmode="none"
-          menuPlacement="end">
-        </pwa-auth>`}
+        <mgt-msal-provider login-type="redirect" client-id="85492d53-58f5-4523-841e-bed6b77fd652" scopes="files.readwrite.all"></mgt-msal-provider>
+        <mgt-login></mgt-login>
       </header>
     `;
   }
