@@ -16,6 +16,7 @@ export class MemoDetail extends LitElement {
   @property({ type: String }) reminderTime: string;
   @property({ type: Boolean }) showToast: boolean = false;
   @property({ type: Boolean }) showOneToast: boolean = false;
+  @property({ type: Boolean }) showErrorToast: boolean = false;
 
   fileToUpload: any;
 
@@ -364,23 +365,32 @@ export class MemoDetail extends LitElement {
   }
 
   async export() {
-    let provider = (window as any).mgt.Providers.globalProvider;
+    try {
+      let provider = (window as any).mgt.Providers.globalProvider;
 
-    console.log(provider);
-    if (provider) {
-      let graphClient = provider.graph.client;
-      const driveItem = await graphClient.api('/me/drive/root/children').middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).post({
-        "name": "memosapp",
-        "folder": {}
-      });
+      console.log(provider);
+      if (provider) {
+        let graphClient = provider.graph.client;
+        const driveItem = await graphClient.api('/me/drive/root/children').middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).post({
+          "name": "memosapp",
+          "folder": {}
+        });
 
-      this.fileToUpload = await graphClient.api(`/me/drive/items/${driveItem.id}:/${this.memo?.name}.weba:/content`).middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).put(this.memo?.blob);
+        this.fileToUpload = await graphClient.api(`/me/drive/items/${driveItem.id}:/${this.memo?.name}.weba:/content`).middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).put(this.memo?.blob);
 
-      this.showOneToast = true;
+        this.showOneToast = true;
+
+        setTimeout(() => {
+          this.showOneToast = false;
+        }, 1400)
+      }
+    }
+    catch (err) {
+      this.showErrorToast = true;
 
       setTimeout(() => {
-        this.showOneToast = false;
-      }, 1400)
+        this.showErrorToast = false;
+      }, 3000)
     }
   }
 
@@ -394,9 +404,9 @@ export class MemoDetail extends LitElement {
         </header>
 
         <div id="nameBlock">
-          <h2>${this.memo ?.name}</h2>
+          <h2>${this.memo?.name}</h2>
 
-          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo ?.blob)}" controls>` : null}
+          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
 
           <div id="reminder">
             <label for="reminder-time">Set a Reminder:</label>
@@ -437,7 +447,9 @@ export class MemoDetail extends LitElement {
 
       ${this.showToast ? html`<app-toast>reminder set</app-toast>` : null}
 
-      ${this.showOneToast ? html`<app-toast>Exported to OneDrive <a .href="${this.fileToUpload.webUrl}">Link</app-toast>` : null}
+      ${this.showOneToast ? html`<app-toast>Exported to OneDrive <a .href="${this.fileToUpload.webUrl}">Link</a></app-toast>` : null}
+
+      ${this.showErrorToast ? html`<app-toast>Must be signed in</app-toast>` : null}
     `;
   }
 }
