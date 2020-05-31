@@ -45,13 +45,20 @@ export class AppHeader extends LitElement {
         }
       }
 
+      @media (prefers-color-scheme: light) {
+
+        mgt-login {
+          --color: var(--app-color-primary);
+        }
+      }
+
       @media (prefers-color-scheme: dark) {
         header {
           color: white;
         }
 
         mgt-login {
-          --popup-content-background-color: #292929;
+          --popup-content-background-color: #444444;
           --popup-color: white;
           --color: white;
           --background-color--hover: #444444;

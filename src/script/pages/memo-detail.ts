@@ -30,6 +30,12 @@ export class MemoDetail extends LitElement {
         top: 12px;
       }
 
+      @media(min-width: 800px) {
+        #backButton {
+          border-radius: 0px !important;
+        }
+      }
+
       #backButton img {
         height: 30px;
       }

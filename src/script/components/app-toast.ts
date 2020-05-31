@@ -18,10 +18,32 @@ export class AppToast extends LitElement {
         animation-name: slideup;
         animation-duration: 300ms;
       }
+
+      @media(min-width: 800px) {
+        #toast {
+          bottom: 16px;
+          top: initial;
+
+          animation-name: slidedown;
+          animation-duration: 300ms;
+        }
+      }
+
       @keyframes slideup {
         from {
           opacity: 0;
           transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0px);
+        }
+      }
+
+      @keyframes slidedown {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
         }
         to {
           opacity: 1;

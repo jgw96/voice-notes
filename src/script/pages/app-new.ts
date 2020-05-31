@@ -152,6 +152,19 @@ export class AppNew extends LitElement {
         }
       }
 
+      @media(min-width: 800px) {
+        #backButton {
+          border-radius: 0px !important;
+        }
+
+        #recordButton {
+          position: fixed;
+          top: 10px;
+          right: 5em;
+          animation: none;
+        }
+      }
+
       canvas {
         height: 100vh;
         width: 100%;
