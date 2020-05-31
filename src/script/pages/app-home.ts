@@ -2,6 +2,7 @@ import { LitElement, css, html, customElement, property } from 'lit-element';
 import { Router } from '@vaadin/router';
 
 // For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
+import '@pwabuilder/pwainstall';
 
 import { get, set } from 'idb-keyval';
 import { Note } from '../../types/interfaces';
