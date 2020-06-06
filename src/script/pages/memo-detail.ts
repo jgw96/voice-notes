@@ -319,6 +319,8 @@ export class MemoDetail extends LitElement {
         }
       })
     }
+
+    Router.go('/');
   }
 
   handleDate(event: any) {

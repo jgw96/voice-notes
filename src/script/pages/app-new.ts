@@ -294,7 +294,9 @@ export class AppNew extends LitElement {
     this.recorded = null;
     this.recording = true;
 
-    (navigator as any).setAppBadge();
+    if ('setAppBadge' in navigator) {
+      (navigator as any).setAppBadge();
+    }
 
     const options = { mimeType: 'audio/webm' };
 
@@ -311,7 +313,9 @@ export class AppNew extends LitElement {
       this.mediaRecorder.start(1000);
     }
 
-    await this.requestWakeLock();
+    if ('wakeLock' in navigator) {
+      await this.requestWakeLock();
+    }
 
     this.recog.startContinuousRecognitionAsync();
   }
@@ -330,12 +334,30 @@ export class AppNew extends LitElement {
 
     this.recorded = blob;
 
-    (navigator as any).clearAppBadge();
+    if ('clearAppBadge' in navigator) {
+      (navigator as any).clearAppBadge();
+    }
   }
 
   runVisual(data: Uint8Array) {
-    const onscreenCanvas = this.shadowRoot?.querySelector('canvas')?.getContext('bitmaprenderer');
-    const canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
+    let onscreenCanvas = null;
+
+    if ('OffscreenCanvas' in window) {
+      onscreenCanvas = this.shadowRoot?.querySelector('canvas')?.getContext('bitmaprenderer');
+    }
+    else {
+      onscreenCanvas = this.shadowRoot?.querySelector('canvas');
+    }
+
+    let canvas = null;
+
+    if ('OffscreenCanvas' in window) {
+      canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
+    }
+    else {
+      canvas = document.createElement('canvas');
+    }
+    
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -344,10 +366,10 @@ export class AppNew extends LitElement {
 
     context?.clearRect(0, 0, canvas.width, canvas.height);
 
-    this.draw(data, context, canvas, (onscreenCanvas as ImageBitmapRenderingContext));
+    this.draw(data, context, canvas, onscreenCanvas);
   }
 
-  draw(data: Uint8Array, context: any, canvas: OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext) {
+  draw(data: Uint8Array, context: any, canvas: HTMLCanvasElement | OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext | HTMLCanvasElement | null | undefined) {
     this.analyser?.getByteFrequencyData(data);
 
     context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#292929' : 'white';
@@ -366,8 +388,10 @@ export class AppNew extends LitElement {
       x += barWidth + 1;
     }
 
-    let bitmapOne = canvas.transferToImageBitmap();
-    onScreenCanvas.transferFromImageBitmap(bitmapOne);
+    if ('OffscreenCanvas' in window) {
+      let bitmapOne = (canvas as OffscreenCanvas).transferToImageBitmap();
+      (onScreenCanvas as ImageBitmapRenderingContext).transferFromImageBitmap(bitmapOne);
+    }
 
     window.requestAnimationFrame(() => this.draw(data, context, canvas, onScreenCanvas));
   }
@@ -387,7 +411,9 @@ export class AppNew extends LitElement {
       this.wakeLock.release();
     }
 
-    (navigator as any).clearAppBadge();
+    if ('clearAppBadge' in navigator) {
+      (navigator as any).clearAppBadge();
+    }
 
     Router.go('/');
   }

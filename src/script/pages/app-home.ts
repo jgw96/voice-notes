@@ -51,7 +51,8 @@ export class AppHome extends LitElement {
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--app-color-primary);
+        background: #686bd2cc;
+        backdrop-filter: blur(10px);
         height: 3.4em;
         justify-content: flex-end;
         align-items: center;
@@ -68,8 +69,7 @@ export class AppHome extends LitElement {
       }
 
       ul li {
-        background: #686bd2bd;
-        backdrop-filter: blur(10px);
+        background: var(--app-color-primary);
         color: white;
         padding-left: 12px;
         padding-right: 12px;
@@ -87,6 +87,7 @@ export class AppHome extends LitElement {
 
       ul li audio {
         height: 34px;
+        width: 80%;
       }
 
       ul li h5 {
@@ -195,6 +196,10 @@ export class AppHome extends LitElement {
           animation-duration: 300ms;
         }
 
+        app-header #newButton {
+          display: none;
+        }
+
         pwa-install {
           top: 12px;
           bottom: initial;
@@ -224,8 +229,7 @@ export class AppHome extends LitElement {
         }
 
         #toolbar {
-          top: 0;
-          background: transparent;
+          display: none;
         }
 
         #newButton {
@@ -335,7 +339,12 @@ export class AppHome extends LitElement {
 
   render() {
     return html`
-    <app-header></app-header>
+    <app-header>
+      <button @click="${this.newNote}" id="newButton">
+        New Note
+        <img src="/assets/plus.svg" alt="add icon">
+      </button>
+    </app-header>
 
       <div>
 

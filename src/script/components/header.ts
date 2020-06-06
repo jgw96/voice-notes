@@ -15,6 +15,11 @@ export class AppHeader extends LitElement {
         padding-right: 16px;
         color: var(--app-color-primary);
         height: 3.4em;
+
+        position: sticky;
+        top: 0;
+
+        z-index: 999999;
       }
 
       header h1 {
@@ -25,7 +30,7 @@ export class AppHeader extends LitElement {
       }
 
       mgt-login {
-        margin-right: 8em;
+        margin-right: 1em;
         z-index: 999999;
         --color: white;
       }
@@ -39,6 +44,10 @@ export class AppHeader extends LitElement {
         padding-right: 16px;
       }
 
+      #loginDiv {
+        display: flex;
+      }
+
       @media (max-width: 800px) {
         mgt-login {
           margin-right: 0em;
@@ -46,6 +55,10 @@ export class AppHeader extends LitElement {
       }
 
       @media (prefers-color-scheme: light) {
+        header {
+          background: #ffffffb8;
+          backdrop-filter: blur(10px);
+        }
 
         mgt-login {
           --color: var(--app-color-primary);
@@ -55,6 +68,8 @@ export class AppHeader extends LitElement {
       @media (prefers-color-scheme: dark) {
         header {
           color: white;
+          background: #292929d9;
+          backdrop-filter: blur(10px);
         }
 
         mgt-login {
@@ -77,8 +92,12 @@ export class AppHeader extends LitElement {
       <header>
         <h1>Memos</h1>
 
-        <mgt-msal-provider login-type="redirect" client-id="85492d53-58f5-4523-841e-bed6b77fd652" scopes="files.readwrite.all"></mgt-msal-provider>
-        <mgt-login></mgt-login>
+        <div id="loginDiv">
+          <mgt-msal-provider login-type="redirect" client-id="85492d53-58f5-4523-841e-bed6b77fd652" scopes="files.readwrite.all"></mgt-msal-provider>
+          <mgt-login></mgt-login>
+
+          <slot></slot>
+        </div>
       </header>
     `;
   }
