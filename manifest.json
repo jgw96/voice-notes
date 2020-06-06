@@ -13,7 +13,8 @@
     {
       "name": "New Memo",
       "description": "Record a new voice memo",
-      "url": "/new"
+      "url": "/new",
+      "icons": [{ "src": "assets/icons/icon_256.png", "sizes": "256x256" }]
     }
   ],
   "icons": [
