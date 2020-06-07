@@ -32,6 +32,9 @@ export class AppHome extends LitElement {
         align-items: center;
         justify-content: space-between;
         width: 9em;
+
+        height: 2.4em;
+        margin-top: 6px;
       }
 
       #newButton img {
@@ -198,6 +201,10 @@ export class AppHome extends LitElement {
 
         app-header #newButton {
           display: none;
+        }
+
+        #toolbar #newButton {
+          margin-top: initial;
         }
 
         pwa-install {
