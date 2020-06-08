@@ -190,6 +190,12 @@ export class AppNew extends LitElement {
         text-align: center;
       }
 
+      @media (prefers-color-scheme: light) {
+        #transcript {
+          color: black;
+        }
+      }
+
       @media(max-width: 800px) {
         #recordButton {
           width: 100%;

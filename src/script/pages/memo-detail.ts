@@ -151,6 +151,10 @@ export class MemoDetail extends LitElement {
         border: solid 2px var(--app-color-primary);
       }
 
+      #reminder-time {
+        width: 93%;
+      }
+
       ul {
         background: #444444;
         border-radius: 4px;
@@ -373,6 +377,8 @@ export class MemoDetail extends LitElement {
   }
 
   async export() {
+    this.showOneToast = true;
+
     try {
       let provider = (window as any).mgt.Providers.globalProvider;
 
@@ -385,8 +391,6 @@ export class MemoDetail extends LitElement {
         });
 
         this.fileToUpload = await graphClient.api(`/me/drive/items/${driveItem.id}:/${this.memo?.name}.weba:/content`).middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).put(this.memo?.blob);
-
-        this.showOneToast = true;
 
         setTimeout(() => {
           this.showOneToast = false;
@@ -455,7 +459,7 @@ export class MemoDetail extends LitElement {
 
       ${this.showToast ? html`<app-toast>reminder set</app-toast>` : null}
 
-      ${this.showOneToast ? html`<app-toast>Exported to OneDrive <a .href="${this.fileToUpload.webUrl}">Link</a></app-toast>` : null}
+      ${this.showOneToast ? html`<app-toast>Exporting to OneDrive</app-toast>` : null}
 
       ${this.showErrorToast ? html`<app-toast>Must be signed in</app-toast>` : null}
     `;
