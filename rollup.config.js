@@ -25,7 +25,7 @@ export default {
         { src: 'src/global.css', dest: 'dist/' },
         { src: 'manifest.json', dest: 'dist/' },
         { src: 'routes.json', dest: 'dist/' },
-        { src: '.well_known/assetlinks.json', dest: "dist/.well_known"}
+        { src: '.well-known/assetlinks.json', dest: "dist/.well-known"}
       ]
     }),
     injectManifest({
