@@ -1,6 +1,5 @@
 import { LitElement, css, html, customElement } from 'lit-element';
 
-
 @customElement('app-toast')
 export class AppToast extends LitElement {
 

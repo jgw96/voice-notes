@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.memos.twa",
+    "sha256_cert_fingerprints": [
+      "3C:0E:9E:47:B1:03:96:88:1B:1F:47:52:01:B9:F4:E9:D9:EB:2F:17:DF:10:51:41:5F:B1:11:13:27:6B:9B:2F"
+    ]
+  }
+}]
