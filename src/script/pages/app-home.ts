@@ -266,6 +266,10 @@ export class AppHome extends LitElement {
   }
 
   async firstUpdated() {
+    await this.getNotes();
+  }
+
+  async getNotes() {
     const notes: Note[] = await get('notes');
 
     if (notes) {
@@ -291,6 +295,8 @@ export class AppHome extends LitElement {
 
           await set('notes', notes);
         }
+
+        await this.getNotes();
       }
     })
   }

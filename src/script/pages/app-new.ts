@@ -122,9 +122,11 @@ export class AppNew extends LitElement {
       input {
         margin-bottom: 1em;
         width: 14em;
-        padding: 5px;
         border-radius: 4px;
-        border: solid 2px black;
+        border: solid 2px;
+        padding: 12px;
+        font-size: 16px;
+        border-color: var(--app-color-primary);
         color: var(--app-color-primary);
       }
 
