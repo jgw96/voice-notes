@@ -4,6 +4,8 @@ import { Router } from '@vaadin/router';
 // For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
 import '@pwabuilder/pwainstall';
 
+import './app-new';
+
 import { get, set } from 'idb-keyval';
 import { Note } from '../../types/interfaces';
 
@@ -11,6 +13,7 @@ import { Note } from '../../types/interfaces';
 export class AppHome extends LitElement {
 
   @property({ type: Array }) notes: Note[] | null = null;
+  @property({ type: Boolean }) dualScreenStart: boolean = false;
 
   static get styles() {
     return css`
@@ -64,10 +67,12 @@ export class AppHome extends LitElement {
         z-index: 9999;
       }
 
+
       ul {
         list-style: none;
         padding: 0;
         margin: 0;
+        margin-bottom: 2em;
         padding: 16px;
       }
 
@@ -106,6 +111,13 @@ export class AppHome extends LitElement {
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+
+      .listHeader h4 {
+        font-size: 1.5em;
+        margin-top: 16px;
+        margin-bottom: 16px;
+        overflow: hidden;
       }
 
       .listHeader button {
@@ -224,7 +236,7 @@ export class AppHome extends LitElement {
       @media (min-width: 1000px) {
         ul {
           display: grid;
-          grid-template-columns: auto auto;
+          grid-template-columns: 50% 48%;
           grid-gap: 16px;
           padding-left: 12em;
           padding-right: 12em;
@@ -253,9 +265,42 @@ export class AppHome extends LitElement {
         }
       }
 
-      @media(spanning: single-fold-vertical) {
-        #welcomeBlock {
+      @media(screen-spanning: single-fold-vertical) {
+        ul {
+          width: calc(env(fold-left) - 32px);
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        app-new {
+          display: flex;
           width: 50%;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          top: 0;
+          background: white;
+          z-index: 999999;
+        }
+
+        app-new::part(canvas) {
+          width: 50%;
+          right: 0;
+          position: absolute;
+          bottom: 0;
+          top: 0;
+        }
+
+        app-new::part(transcript) {
+          width: 50%;
+        }
+
+        app-new::part(wrapper) {
+          width: 100%;
+        }
+
+        app-new::part(audioDiv) {
+          margin-top: 2em;
         }
       }
     `;
@@ -278,7 +323,12 @@ export class AppHome extends LitElement {
   }
 
   newNote() {
-    Router.go('/new');
+    if (window.matchMedia('(screen-spanning: single-fold-vertical)').matches) {
+      this.dualScreenStart = true;
+    }
+    else {
+      Router.go('/new');
+    }
   }
 
   async deleteNote(i: Note) {
@@ -313,20 +363,20 @@ export class AppHome extends LitElement {
     }
   }
 
-  async download(i: Note) {
-    const opts = {
-      type: 'save-file',
-      accepts: [{
-        description: 'audio file',
-        extensions: ['webm'],
-        mimeTypes: ['audio/webm'],
-      }],
-    };
-    const handle = await (window as any).chooseFileSystemEntries(opts);
+  async download(memo: Note | undefined) {
+    const browserfs = await import('browser-nativefs');
 
-    const writable = await handle.createWritable();
-    await writable.write(i.blob);
-    await writable.close();
+    const options = {
+      // Suggested file name to use, defaults to `''`.
+      fileName: 'Untitled.weba',
+      // Suggested file extensions (with leading '.'), defaults to `''`.
+      extensions: ['.aac'],
+      mimeTypes: ['audio/aac'],
+    };
+
+    if (memo) {
+      await browserfs.fileSave(memo.blob, options);
+    }
   }
 
   async detail(memo: Note) {
@@ -364,7 +414,7 @@ export class AppHome extends LitElement {
         ${this.notes && this.notes.length > 0 ? html`<ul>
           ${this.notes.map(i => html`<li>
             <div class="listHeader">
-              <h5 @click="${() => this.detail(i)}">${i.name}</h5>
+              <h4 @click="${() => this.detail(i)}">${i.name}</h4>
 
               <div id="listHeaderActions">
                 <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg" alt="share icon"></button>
@@ -394,6 +444,10 @@ export class AppHome extends LitElement {
             <img src="/assets/plus.svg" alt="add icon">
           </button>
         </div>
+
+        ${
+          this.dualScreenStart ? html`<app-new></app-new>` : null
+        }
 
         <pwa-install>Install Memos</pwa-install>
       </div>

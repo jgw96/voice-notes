@@ -3,6 +3,7 @@ import { Note } from '../../types/interfaces';
 import { getMemo } from '../services/data';
 import { Router } from '@vaadin/router';
 import { set, get } from 'idb-keyval';
+import {fileSave } from "browser-nativefs";
 
 import "../components/app-toast";
 
@@ -61,13 +62,14 @@ export class MemoDetail extends LitElement {
 
         position: fixed;
         bottom: 0;
-        width: 100%;
-        justify-content: space-evenly;
+        justify-content: space-between;
         left: 0;
         right: 0;
 
         padding-top: 10px;
         padding-bottom: 10px;
+        padding-right: 10px;
+        padding-left: 10px;
 
         background: var(--app-color-primary);
 
@@ -85,7 +87,7 @@ export class MemoDetail extends LitElement {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 7.6em;
+        width: 7em;
         padding: 6px 9px;
         cursor: pointer;
       }
@@ -255,6 +257,20 @@ export class MemoDetail extends LitElement {
         }
       }
 
+      @media(screen-spanning: single-fold-vertical) {
+        #nameBlock {
+          display: flex;
+          padding-left: 4em;
+          padding-right: 0;
+          margin-left: 0;
+          justify-content: space-between;
+        }
+
+        #nameBlock div {
+          flex: 1;
+        }
+      }
+
     `;
   }
 
@@ -289,21 +305,16 @@ export class MemoDetail extends LitElement {
   }
 
   async download(memo: Note | undefined) {
-    const opts = {
-      type: 'save-file',
-      accepts: [{
-        description: 'audio file',
-        extensions: ['weba'],
-        mimeTypes: ['audio/webm'],
-      }],
+    const options = {
+      // Suggested file name to use, defaults to `''`.
+      fileName: 'Untitled.weba',
+      // Suggested file extensions (with leading '.'), defaults to `''`.
+      extensions: ['.aac'],
+      mimeTypes: ['audio/aac'],
     };
-    const handle = await (window as any).chooseFileSystemEntries(opts);
-
-    const writable = await handle.createWritable();
 
     if (memo) {
-      await writable.write(memo.blob);
-      await writable.close();
+      await fileSave(memo.blob, options);
     }
   }
 
@@ -416,7 +427,8 @@ export class MemoDetail extends LitElement {
         </header>
 
         <div id="nameBlock">
-          <h2>${this.memo?.name}</h2>
+        <div>
+          <h1>${this.memo?.name}</h1>
 
           ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
 
@@ -429,31 +441,30 @@ export class MemoDetail extends LitElement {
             <button @click="${() => this.setReminder()}">Set</button>
           </div>
 
-          <div id="exportToOnedrive">
-            <button @click="${this.export}">Export To OneDrive</button>
-          </div>
-
           <div id="detailActions">
                 <button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></button>
                 <button id="downloadButton" @click="${() => this.download(this.memo)}">Save <img src="/assets/save.svg" alt="Save icon"></button>
                 <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
           </div>
+          </div>
 
-          ${this.memo?.transcript && this.memo?.transcript.length > 0 ? html`<h4>Transcript</h4>` : null}
+          <div>
+            ${this.memo?.transcript && this.memo?.transcript.length > 0 ? html`<h3>Transcript</h3>` : html`<h3>No Transcript</h3>`}
 
-          ${
-      this.memo?.transcript && this.memo?.transcript.length > 0 ? html`
-              <ul>
-              ${
-        this.memo?.transcript.map((line: any) => {
-          return html`
-                   <li>${line}</li>
-                  `
-        })
-        }
-              </ul>
-            ` : null
-      }
+            ${
+            this.memo?.transcript && this.memo?.transcript.length > 0 ? html`
+                <ul>
+                ${
+            this.memo?.transcript.map((line: any) => {
+            return html`
+                    <li>${line}</li>
+                    `
+            })
+            }
+                </ul>
+              ` : null
+            }
+          </div>
         </div>
       </div>
 

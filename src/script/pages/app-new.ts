@@ -26,6 +26,13 @@ export class AppNew extends LitElement {
         cursor: pointer;
       }
 
+      #innerAudio {
+        box-shadow: #00000059 2px 2px 8px 2px;
+        display: flex;
+        flex-direction: column;
+        padding: 1em 2em 2em 2em;
+      }
+
       #toolbar {
         position: fixed;
         bottom: 0;
@@ -82,18 +89,23 @@ export class AppNew extends LitElement {
       }
       
       #stopButton {
-        background: #ff4141;
-        border: none;
+        background: red;
+        border: solid 1px red;
         border-radius: 2px;
-        color: red;
+        color: white;
         padding: 6px;
-        text-transform: uppercase;
         padding-left: 12px;
         padding-right: 12px;
+        text-transform: uppercase;
 
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        width: 14em;
+
+        animation-name: slideup;
+        animation-duration: 300ms;
       }
 
       #stopButton img {
@@ -109,6 +121,9 @@ export class AppNew extends LitElement {
         padding: 10px;
         width: 8em;
         border-radius: 2px;
+
+        align-self: flex-end;
+        margin-top: 2em;
       }
 
       #audioDiv {
@@ -117,6 +132,10 @@ export class AppNew extends LitElement {
         justify-content: center;
         align-items: center;
         height: 56vh;
+      }
+
+      #audioDiv h3 {
+        font-size: 1.6em;
       }
 
       input {
@@ -159,7 +178,7 @@ export class AppNew extends LitElement {
           border-radius: 0px !important;
         }
 
-        #recordButton {
+        #recordButton, #stopButton {
           position: fixed;
           top: 10px;
           right: 5em;
@@ -199,7 +218,7 @@ export class AppNew extends LitElement {
       }
 
       @media(max-width: 800px) {
-        #recordButton {
+        #recordButton, #stopButton {
           width: 100%;
         }
       }
@@ -235,23 +254,6 @@ export class AppNew extends LitElement {
   }
 
   async firstUpdated() {
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: true
-    });
-
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const source = audioContext.createMediaStreamSource(this.stream);
-
-    this.analyser = audioContext.createAnalyser();
-
-    source.connect(this.analyser);
-
-    this.analyser.fftSize = 2048;
-    const bufferLength = this.analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    this.runVisual(dataArray);
 
     (window as any).requestIdleCallback(async () => {
       // speech to text
@@ -299,6 +301,24 @@ export class AppNew extends LitElement {
   }
 
   async startRecording() {
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true
+    });
+
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(this.stream);
+
+    this.analyser = audioContext.createAnalyser();
+
+    source.connect(this.analyser);
+
+    this.analyser.fftSize = 2048;
+    const bufferLength = this.analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    this.runVisual(dataArray);
+
     this.recorded = null;
     this.recording = true;
 
@@ -338,7 +358,7 @@ export class AppNew extends LitElement {
 
     this.recording = false;
 
-    const blob = new Blob(this.recordedChunks);
+    const blob = new Blob(this.recordedChunks, {type: "audio/webm"});
 
     this.recorded = blob;
 
@@ -460,32 +480,36 @@ export class AppNew extends LitElement {
         </button>
       </header>
 
-      <div>
+      <div part="wrapper">
 
-      <canvas></canvas>
+      <canvas part="canvas"></canvas>
 
-      ${this.transcript && this.recording ? html`<span id="transcript">${this.transcript}</span>` : null}
+      ${this.transcript && this.recording ? html`<span id="transcript" part="transcript">${this.transcript}</span>` : null}
 
         ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null}
 
         ${
-      this.recorded ? html`<div id="audioDiv">
-          <h3>New Note</h3>
+      this.recorded ? html`<div id="audioDiv" part="audioDiv">
 
-          <input type="text" placeholder="note name..." @change="${this.handleInput}" .value="${this.fileName}">
+         <div id="innerAudio">
+           <h3>New Note</h3>
 
-          <audio controls .src="${URL.createObjectURL(this.recorded)}"></audio>
+            <input type="text" placeholder="note name..." @change="${this.handleInput}" .value="${this.fileName}">
 
-          <button id="saveButton" @click="${this.save}">Save</button>
+            <audio controls .src="${URL.createObjectURL(this.recorded)}"></audio>
+
+            <button id="saveButton" @click="${this.save}">Save</button>
+         </div>
+          
         </div>` : null
       }
         
         <div id="toolbar">
-          ${this.recording ? html`<span>Recording...</span>` : html`<span></span>`}
           ${!this.recording ? html`<button @click="${this.startRecording}" id="recordButton">
             Start Recording
             <img src="/assets/mic.svg" alt="mic icon">
           </button>` : html`<button id="stopButton" @click="${this.stopRecording}">
+            Stop Recording
             <img src="/assets/stop.svg" alt="stop icon">
           </button>`}
         </div>

@@ -93,8 +93,6 @@ export class AppHeader extends LitElement {
         <h1>Memos</h1>
 
         <div id="loginDiv">
-          <mgt-msal-provider login-type="redirect" client-id="85492d53-58f5-4523-841e-bed6b77fd652" scopes="files.readwrite.all"></mgt-msal-provider>
-          <mgt-login></mgt-login>
 
           <slot></slot>
         </div>
