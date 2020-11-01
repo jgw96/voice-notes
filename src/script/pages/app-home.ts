@@ -284,7 +284,6 @@ export class AppHome extends LitElement {
         }
 
         app-new::part(canvas) {
-          width: 50%;
           right: 0;
           position: absolute;
           bottom: 0;
