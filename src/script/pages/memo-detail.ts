@@ -428,7 +428,7 @@ export class MemoDetail extends LitElement {
 
         <div id="nameBlock">
         <div>
-          <h1>${this.memo?.name}</h1>
+          <h2>${this.memo?.name}</h2>
 
           ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
 

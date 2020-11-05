@@ -14,6 +14,10 @@ html, body {
   margin: 0;
 }
 
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     background: #292929;

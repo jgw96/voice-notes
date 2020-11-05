@@ -77,13 +77,14 @@ export class AppHome extends LitElement {
       }
 
       ul li {
-        background: var(--app-color-primary);
+        background: rgba(104, 107, 210, 0.82);
+        backdrop-filter: blur(10px);
         color: white;
         padding-left: 12px;
         padding-right: 12px;
         padding-top: 2px;
         padding-bottom: 12px;
-        border-radius: 16px;
+        border-radius: 4px;
 
         margin-bottom: 1em;
       }
@@ -114,7 +115,7 @@ export class AppHome extends LitElement {
       }
 
       .listHeader h4 {
-        font-size: 1.5em;
+        font-size: 1.2em;
         margin-top: 16px;
         margin-bottom: 16px;
         overflow: hidden;
@@ -302,6 +303,12 @@ export class AppHome extends LitElement {
           margin-top: 2em;
         }
       }
+
+      @media(prefers-color-scheme: dark) {
+        app-new {
+          background: #292929;
+        }
+      }
     `;
   }
 
@@ -429,7 +436,7 @@ export class AppHome extends LitElement {
           </li>`)}
         </ul>` : html`<p id="firstIntro">
           Quickly and easily record an audio memo for yourself,
-          tap the button below to start recording a new note!
+          tap the Start Recording button to record a new note!
         </p>
 
         <p id="secondIntro">

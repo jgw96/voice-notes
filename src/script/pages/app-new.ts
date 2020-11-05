@@ -486,7 +486,7 @@ export class AppNew extends LitElement {
 
       ${this.transcript && this.recording ? html`<span id="transcript" part="transcript">${this.transcript}</span>` : null}
 
-        ${!this.recording && this.recorded === null ? html`<h3 id="introText">Hit the button below to start recording!</h3>` : null}
+        ${!this.recording && this.recorded === null ? html`<h3 id="introText">Tap the Start Recording button to start a new note!</h3>` : null}
 
         ${
       this.recorded ? html`<div id="audioDiv" part="audioDiv">
