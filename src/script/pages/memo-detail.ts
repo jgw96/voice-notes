@@ -78,18 +78,19 @@ export class MemoDetail extends LitElement {
       }
 
       #detailActions button {
-        color: white;
         background: none;
-        border: solid 1px white;
-        border-radius: 2px;
-        text-transform: uppercase;
+        cursor: pointer;
 
+        border: 1px solid white;
+        border-radius: 2px;
+        color: white;
+        padding: 6px 12px;
+        text-transform: uppercase;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 7em;
-        padding: 6px 9px;
-        cursor: pointer;
+        width: 9em;
+        height: 2.4em;
       }
 
       #detailActions img {
@@ -237,7 +238,7 @@ export class MemoDetail extends LitElement {
         }
 
         #backButton {
-          height: 4.35em;
+          height: 3.9em;
           background: #686bd2;
           top: 0;
           width: 4em;

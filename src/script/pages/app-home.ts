@@ -87,6 +87,10 @@ export class AppHome extends LitElement {
         border-radius: 4px;
 
         margin-bottom: 1em;
+
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0%;
       }
 
       ul li:nth-child(-n+4) {
@@ -111,13 +115,17 @@ export class AppHome extends LitElement {
       .listHeader {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: baseline;
       }
 
       .listHeader h4 {
         font-size: 1.2em;
         margin-top: 16px;
         margin-bottom: 16px;
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
         overflow: hidden;
       }
 
@@ -171,7 +179,7 @@ export class AppHome extends LitElement {
       #detailBlock {
         display: flex;
         justify-content: flex-end;
-        margin-top: 10px;
+        margin-top: auto;
       }
 
       #detailBlock button{
