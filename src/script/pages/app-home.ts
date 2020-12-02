@@ -1,17 +1,16 @@
-import { LitElement, css, html, customElement, property } from 'lit-element';
-import { Router } from '@vaadin/router';
+import { LitElement, css, html, customElement, property } from "lit-element";
+import { Router } from "@vaadin/router";
 
 // For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
-import '@pwabuilder/pwainstall';
+import "@pwabuilder/pwainstall";
 
-import './app-new';
+import "./app-new";
 
-import { get, set } from 'idb-keyval';
-import { Note } from '../../types/interfaces';
+import { get, set } from "idb-keyval";
+import { Note } from "../../types/interfaces";
 
-@customElement('app-home')
+@customElement("app-home")
 export class AppHome extends LitElement {
-
   @property({ type: Array }) notes: Note[] | null = null;
   @property({ type: Boolean }) dualScreenStart: boolean = false;
 
@@ -22,26 +21,11 @@ export class AppHome extends LitElement {
       }
 
       #newButton {
-        background: none;
-        border: solid 1px white;
-        border-radius: 2px;
-        color: white;
-        padding: 6px;
-        padding-left: 12px;
-        padding-right: 12px;
-        text-transform: uppercase;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 9em;
-
-        height: 2.4em;
-        margin-top: 6px;
+        background: var(--app-color-primary);
       }
 
       #newButton img {
-        height: 18px;
+        height: 14px;
       }
 
       pwa-install {
@@ -57,7 +41,7 @@ export class AppHome extends LitElement {
         bottom: 0;
         left: 0;
         right: 0;
-        background: #686bd2cc;
+        background: #181818c9
         backdrop-filter: blur(10px);
         height: 3.4em;
         justify-content: flex-end;
@@ -67,7 +51,6 @@ export class AppHome extends LitElement {
         z-index: 9999;
       }
 
-
       ul {
         list-style: none;
         padding: 0;
@@ -76,15 +59,12 @@ export class AppHome extends LitElement {
         padding: 16px;
       }
 
-      ul li {
-        background: rgba(104, 107, 210, 0.82);
-        backdrop-filter: blur(10px);
+      ul fast-card {
         color: white;
         padding-left: 12px;
         padding-right: 12px;
         padding-top: 2px;
         padding-bottom: 12px;
-        border-radius: 4px;
 
         margin-bottom: 1em;
 
@@ -93,17 +73,21 @@ export class AppHome extends LitElement {
         flex: 1 1 0%;
       }
 
-      ul li:nth-child(-n+4) {
+      ul fast-card {
+        padding: 12px;
+      }
+
+      ul fast-card:nth-child(-n + 4) {
         animation-name: slidein;
         animation-duration: 300ms;
       }
 
-      ul li audio {
+      ul fast-card audio {
         height: 34px;
         width: 80%;
       }
 
-      ul li h5 {
+      ul fast-card h5 {
         margin-top: 12px;
         font-size: 18px;
         margin-bottom: 16px;
@@ -115,13 +99,13 @@ export class AppHome extends LitElement {
       .listHeader {
         display: flex;
         justify-content: space-between;
-        align-items: baseline;
+        align-items: center;
+        margin-bottom: 16px;
       }
 
-      .listHeader h4 {
-        font-size: 1.2em;
-        margin-top: 16px;
-        margin-bottom: 16px;
+      .listHeader h3 {
+        margin-top: 0;
+        margin-bottom: 0;
         overflow: hidden;
 
         text-overflow: ellipsis;
@@ -135,8 +119,8 @@ export class AppHome extends LitElement {
         cursor: pointer;
       }
 
-      .listHeader button img {
-        height: 2em;
+      #listHeaderActions button img {
+        height: 20px;
       }
 
       #firstIntro {
@@ -157,7 +141,8 @@ export class AppHome extends LitElement {
         margin-top: 4em;
       }
 
-      #shareButton img, #downloadButton img {
+      #shareButton img,
+      #downloadButton img {
         height: 20px;
       }
 
@@ -182,7 +167,7 @@ export class AppHome extends LitElement {
         margin-top: auto;
       }
 
-      #detailBlock button{
+      #detailBlock button {
         color: var(--app-color-primary);
         background: white;
         border: none;
@@ -236,8 +221,9 @@ export class AppHome extends LitElement {
         }
       }
 
-      @media(prefers-color-scheme: dark) {
-        #firstIntro, #secondIntro {
+      @media (prefers-color-scheme: dark) {
+        #firstIntro,
+        #secondIntro {
           color: white;
         }
       }
@@ -247,8 +233,8 @@ export class AppHome extends LitElement {
           display: grid;
           grid-template-columns: 50% 48%;
           grid-gap: 16px;
-          padding-left: 12em;
-          padding-right: 12em;
+          padding-left: 10em;
+          padding-right: 10em;
         }
 
         #introImg {
@@ -262,8 +248,6 @@ export class AppHome extends LitElement {
 
         #newButton {
           background: var(--app-color-primary);
-          color: white;
-          border-radius: 4px;
         }
       }
 
@@ -274,7 +258,7 @@ export class AppHome extends LitElement {
         }
       }
 
-      @media(screen-spanning: single-fold-vertical) {
+      @media (screen-spanning: single-fold-vertical) {
         ul {
           width: calc(env(fold-left) - 32px);
           padding-left: 16px;
@@ -312,9 +296,9 @@ export class AppHome extends LitElement {
         }
       }
 
-      @media(prefers-color-scheme: dark) {
+      @media (prefers-color-scheme: dark) {
         app-new {
-          background: #292929;
+          background: #181818;
         }
       }
     `;
@@ -329,7 +313,7 @@ export class AppHome extends LitElement {
   }
 
   async getNotes() {
-    const notes: Note[] = await get('notes');
+    const notes: Note[] = await get("notes");
 
     if (notes) {
       this.notes = notes;
@@ -337,16 +321,15 @@ export class AppHome extends LitElement {
   }
 
   newNote() {
-    if (window.matchMedia('(screen-spanning: single-fold-vertical)').matches) {
+    if (window.matchMedia("(screen-spanning: single-fold-vertical)").matches) {
       this.dualScreenStart = true;
-    }
-    else {
-      Router.go('/new');
+    } else {
+      Router.go("/new");
     }
   }
 
   async deleteNote(i: Note) {
-    const notes: Note[] = await get('notes');
+    const notes: Note[] = await get("notes");
 
     notes.forEach(async (note: Note) => {
       if (i.name === note.name) {
@@ -357,12 +340,12 @@ export class AppHome extends LitElement {
 
           this.notes = notes;
 
-          await set('notes', notes);
+          await set("notes", notes);
         }
 
         await this.getNotes();
       }
-    })
+    });
   }
 
   async shareNote(note: Note) {
@@ -371,21 +354,21 @@ export class AppHome extends LitElement {
     if ((navigator as any).canShare && (navigator as any).canShare(file)) {
       await (navigator as any).share({
         file: file,
-        title: 'Note',
-        text: 'Check out this note',
-      })
+        title: "Note",
+        text: "Check out this note",
+      });
     }
   }
 
   async download(memo: Note | undefined) {
-    const browserfs = await import('browser-nativefs');
+    const browserfs = await import("browser-nativefs");
 
     const options = {
       // Suggested file name to use, defaults to `''`.
-      fileName: 'Untitled.weba',
+      fileName: "Untitled.weba",
       // Suggested file extensions (with leading '.'), defaults to `''`.
-      extensions: ['.aac'],
-      mimeTypes: ['audio/aac'],
+      extensions: [".aac"],
+      mimeTypes: ["audio/aac"],
     };
 
     if (memo) {
@@ -395,7 +378,7 @@ export class AppHome extends LitElement {
 
   async detail(memo: Note) {
     console.log(memo);
-    Router.go(`memo/${memo.name}`)
+    Router.go(`memo/${memo.name}`);
   }
 
   checkConnection() {
@@ -404,70 +387,94 @@ export class AppHome extends LitElement {
 
       if (type === "4g") {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
-    }
-    else {
+    } else {
       return true;
     }
   }
 
   render() {
     return html`
-    <app-header>
-      <button @click="${this.newNote}" id="newButton">
-        New Note
-        <img src="/assets/plus.svg" alt="add icon">
-      </button>
-    </app-header>
+      <app-header>
+        <fast-button @click="${this.newNote}" id="newButton">
+          New Note
+          <img src="/assets/plus.svg" alt="add icon" />
+        </fast-button>
+      </app-header>
 
       <div>
+        ${this.notes && this.notes.length > 0
+          ? html`<ul>
+              ${this.notes.map(
+                (i) => html`
+          <fast-card>
 
-        ${this.notes && this.notes.length > 0 ? html`<ul>
-          ${this.notes.map(i => html`<li>
-            <div class="listHeader">
-              <h4 @click="${() => this.detail(i)}">${i.name}</h4>
+          <div class="listHeader">
+            <h3 @click="${() => this.detail(i)}">${i.name}</h3>
 
+
+            
               <div id="listHeaderActions">
-                <button id="shareButton" @click="${() => this.shareNote(i)}"><img src="/assets/share.svg" alt="share icon"></button>
-                <button id="downloadButton" @click="${() => this.download(i)}"><img src="/assets/save.svg" alt="Save icon"></button>
-                <button @click="${() => this.deleteNote(i)}"><img src="/assets/close.svg" alt="close icon"></button>
+                  <button id="shareButton" @click="${() =>
+                    this.shareNote(
+                      i
+                    )}"><img src="/assets/share.svg" alt="share icon"></button>
+                  <button id="downloadButton" @click="${() =>
+                    this.download(
+                      i
+                    )}"><img src="/assets/save.svg" alt="Save icon"></button>
+                  <button @click="${() =>
+                    this.deleteNote(
+                      i
+                    )}"><img src="/assets/close.svg" alt="close icon"></button>
+                </div>
               </div>
             </div>
             <audio .src="${URL.createObjectURL(i.blob)}" controls></audio>
 
             <div id="detailBlock">
-              <button @click="${() => this.detail(i)}">Details</button>
+              <fast-button @click="${() => this.detail(i)}">Details</fast-button>
             </div>
-          </li>`)}
-        </ul>` : html`<p id="firstIntro">
-          Quickly and easily record an audio memo for yourself,
-          tap the Start Recording button to record a new note!
-        </p>
+        </fast-card>
+          `
+              )}
+            </ul>`
+          : html`<p id="firstIntro">
+                Quickly and easily record an audio memo for yourself, tap the
+                Start Recording button to record a new note!
+              </p>
 
-        <p id="secondIntro">
-          All notes are only stored locally on your device, leaving you in complete control of your data.
-        </p>
-        
-        `}
+              <p id="secondIntro">
+                All notes are only stored locally on your device, leaving you in
+                complete control of your data.
+              </p> `}
         <div id="toolbar">
-          <button @click="${this.newNote}" id="newButton">
+          <fast-button @click="${this.newNote}" id="newButton">
             New Note
-            <img src="/assets/plus.svg" alt="add icon">
-          </button>
+            <img src="/assets/plus.svg" alt="add icon" />
+          </fast-button>
         </div>
 
-        ${
-          this.dualScreenStart ? html`<app-new></app-new>` : null
-        }
+        ${this.dualScreenStart ? html`<app-new></app-new>` : null}
 
         <pwa-install>Install Memos</pwa-install>
       </div>
 
-      ${(navigator as any).connection ? html`${this.checkConnection() === true ? html`<img id="introImg" src="/assets/intro.webp" alt="intro image">` : null}` : html`<img id="introImg" src="/assets/intro.webp" alt="intro image">`}
-
+      ${(navigator as any).connection
+        ? html`${this.checkConnection() === true
+            ? html`<img
+                id="introImg"
+                src="/assets/intro.webp"
+                alt="intro image"
+              />`
+            : null}`
+        : html`<img
+            id="introImg"
+            src="/assets/intro.webp"
+            alt="intro image"
+          />`}
     `;
   }
 }

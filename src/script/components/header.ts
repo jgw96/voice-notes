@@ -68,7 +68,7 @@ export class AppHeader extends LitElement {
       @media (prefers-color-scheme: dark) {
         header {
           color: white;
-          background: #292929d9;
+          background: #181818d9;
           backdrop-filter: blur(10px);
         }
 

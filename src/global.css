@@ -20,6 +20,6 @@ html::-webkit-scrollbar {
 
 @media (prefers-color-scheme: dark) {
   html {
-    background: #292929;
+    background: #181818;
   }
 }

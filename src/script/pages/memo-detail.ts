@@ -16,8 +16,6 @@ export class MemoDetail extends LitElement {
   @property() memo: Note | undefined = undefined;
   @property({ type: String }) reminderTime: string;
   @property({ type: Boolean }) showToast: boolean = false;
-  @property({ type: Boolean }) showOneToast: boolean = false;
-  @property({ type: Boolean }) showErrorToast: boolean = false;
 
   fileToUpload: any;
 
@@ -44,6 +42,7 @@ export class MemoDetail extends LitElement {
       #nameBlock {
         font-size: 16px;
         margin-left: 16px;
+        margin-bottom: 6em;
       }
 
       ul {
@@ -62,14 +61,11 @@ export class MemoDetail extends LitElement {
 
         position: fixed;
         bottom: 0;
-        justify-content: space-between;
+        justify-content: flex-end;
         left: 0;
         right: 0;
 
-        padding-top: 10px;
-        padding-bottom: 10px;
-        padding-right: 10px;
-        padding-left: 10px;
+        padding: 6px;
 
         background: var(--app-color-primary);
 
@@ -77,24 +73,13 @@ export class MemoDetail extends LitElement {
         animation-duration: 300ms;
       }
 
-      #detailActions button {
-        background: none;
+      #detailActions fast-button {
         cursor: pointer;
-
-        border: 1px solid white;
-        border-radius: 2px;
-        color: white;
-        padding: 6px 12px;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 9em;
-        height: 2.4em;
+        margin-left: 8px;
       }
 
       #detailActions img {
-        width: 24px;
+        width: 14px;
       }
 
       h2 {
@@ -129,22 +114,10 @@ export class MemoDetail extends LitElement {
         margin-bottom: 6px;
       }
 
-      #reminder button{
-        color: var(--app-color-primary);
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 4em;
-        background: none;
-        border-width: 1px;
-        border-style: solid;
-        border-color: var(--app-color-primary);
-        border-image: initial;
-        border-radius: 2px;
-        padding: 6px 9px;
-        margin-top: 1em;
+      #reminder fast-button{
+        width: 5em;
         align-self: flex-end;
+        margin-top: 16px;
       }
 
       input {
@@ -394,36 +367,6 @@ export class MemoDetail extends LitElement {
     }
   }
 
-  async export() {
-    this.showOneToast = true;
-
-    try {
-      let provider = (window as any).mgt.Providers.globalProvider;
-
-      console.log(provider);
-      if (provider) {
-        let graphClient = provider.graph.client;
-        const driveItem = await graphClient.api('/me/drive/root/children').middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).post({
-          "name": "memosapp",
-          "folder": {}
-        });
-
-        this.fileToUpload = await graphClient.api(`/me/drive/items/${driveItem.id}:/${this.memo?.name}.weba:/content`).middlewareOptions((window as any).mgt.prepScopes('user.read', 'files.readwrite.all')).put(this.memo?.blob);
-
-        setTimeout(() => {
-          this.showOneToast = false;
-        }, 1400)
-      }
-    }
-    catch (err) {
-      this.showErrorToast = true;
-
-      setTimeout(() => {
-        this.showErrorToast = false;
-      }, 3000)
-    }
-  }
-
   render() {
     return html`
       <div>
@@ -445,13 +388,13 @@ export class MemoDetail extends LitElement {
             <input type="datetime-local" id="reminder-time"
                   name="reminder-time" @change="${this.handleDate}" .value="${this.reminderTime}">
 
-            <button @click="${() => this.setReminder()}">Set</button>
+            <fast-button @click="${() => this.setReminder()}">Set</fast-button>
           </div>
 
           <div id="detailActions">
-                <button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></button>
-                <button id="downloadButton" @click="${() => this.download(this.memo)}">Save <img src="/assets/save.svg" alt="Save icon"></button>
-                <button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></button>
+                <fast-button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></fast-button>
+                <fast-button id="downloadButton" @click="${() => this.download(this.memo)}">Save <img src="/assets/save.svg" alt="Save icon"></fast-button>
+                <fast-button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></fast-button>
           </div>
           </div>
 
@@ -476,10 +419,6 @@ export class MemoDetail extends LitElement {
       </div>
 
       ${this.showToast ? html`<app-toast>reminder set</app-toast>` : null}
-
-      ${this.showOneToast ? html`<app-toast>Exporting to OneDrive</app-toast>` : null}
-
-      ${this.showErrorToast ? html`<app-toast>Must be signed in</app-toast>` : null}
     `;
   }
 }

@@ -66,61 +66,30 @@ export class AppNew extends LitElement {
       
       #recordButton {
         background: var(--app-color-primary);
-        border: solid 1px var(--app-color-primary);
-        border-radius: 2px;
-        color: white;
-        padding: 6px;
-        padding-left: 12px;
-        padding-right: 12px;
-        text-transform: uppercase;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 14em;
+        width: 12em;
 
         animation-name: slideup;
         animation-duration: 300ms;
       }
 
       #recordButton img {
-        height: 22px;
+        height: 14px;
       }
       
       #stopButton {
         background: red;
-        border: solid 1px red;
-        border-radius: 2px;
-        color: white;
-        padding: 6px;
-        padding-left: 12px;
-        padding-right: 12px;
-        text-transform: uppercase;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 14em;
+        width: 12em;
 
         animation-name: slideup;
         animation-duration: 300ms;
       }
 
       #stopButton img {
-        height: 22px;
+        height: 14px;
       }
 
       #saveButton {
-        margin-top: 16px;
         background: var(--app-color-primary);
-        color: white;
-        text-transform: uppercase;
-        border: none;
-        padding: 10px;
-        width: 8em;
-        border-radius: 2px;
 
         align-self: flex-end;
         margin-top: 2em;
@@ -400,7 +369,7 @@ export class AppNew extends LitElement {
   draw(data: Uint8Array, context: any, canvas: HTMLCanvasElement | OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext | HTMLCanvasElement | null | undefined) {
     this.analyser?.getByteFrequencyData(data);
 
-    context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#292929' : 'white';
+    context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#181818' : 'white';
     context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
     let barWidth = (window.innerWidth / data.length) * 4.5;
@@ -498,20 +467,20 @@ export class AppNew extends LitElement {
 
             <audio controls .src="${URL.createObjectURL(this.recorded)}"></audio>
 
-            <button id="saveButton" @click="${this.save}">Save</button>
+            <fast-button id="saveButton" @click="${this.save}">Save</fast-button>
          </div>
           
         </div>` : null
       }
         
         <div id="toolbar">
-          ${!this.recording ? html`<button @click="${this.startRecording}" id="recordButton">
+          ${!this.recording ? html`<fast-button @click="${this.startRecording}" id="recordButton">
             Start Recording
             <img src="/assets/mic.svg" alt="mic icon">
-          </button>` : html`<button id="stopButton" @click="${this.stopRecording}">
+          </fast-button>` : html`<fast-button id="stopButton" @click="${this.stopRecording}">
             Stop Recording
             <img src="/assets/stop.svg" alt="stop icon">
-          </button>`}
+          </fast-button>`}
         </div>
       </div>
     `;
