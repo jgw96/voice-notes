@@ -258,6 +258,12 @@ export class MemoDetail extends LitElement {
         }
       }
 
+      @media(max-width: 800px) {
+        #detailActions button {
+          height: 3em;
+        }
+      }
+
       @media(screen-spanning: single-fold-vertical) {
         #nameBlock {
           display: flex;
