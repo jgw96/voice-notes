@@ -18,6 +18,17 @@ html::-webkit-scrollbar {
   width: 8px;
 }
 
+@media(prefers-color-scheme: light) {
+  fast-design-system-provider {
+    --background-color: #edebe9;
+    color: black;
+  }
+
+  html, body {
+    background: #edebe9;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     background: #181818;

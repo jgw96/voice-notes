@@ -60,7 +60,6 @@ export class AppHome extends LitElement {
       }
 
       ul fast-card {
-        color: white;
         padding-left: 12px;
         padding-right: 12px;
         padding-top: 2px;
@@ -119,6 +118,20 @@ export class AppHome extends LitElement {
         cursor: pointer;
       }
 
+      @media(prefers-color-scheme: light) {
+        .listHeader button {
+          background: var(--app-color-primary);
+          border-radius: 50%;
+          height: 2.4em;
+          width: 2.4em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 6px;
+          margin-right: 4px;
+        }
+      }
+
       #listHeaderActions button img {
         height: 20px;
       }
@@ -133,7 +146,6 @@ export class AppHome extends LitElement {
       }
 
       #secondIntro {
-        color: white;
         margin-left: 4em;
         margin-right: 4em;
         font-size: 14px;
@@ -221,6 +233,16 @@ export class AppHome extends LitElement {
         }
       }
 
+      @media (prefers-color-scheme: light) {
+        #firstIntro, #secondIntro {
+          color: black;
+        }
+
+        fast-card {
+          background: white;
+        }
+      }
+
       @media (prefers-color-scheme: dark) {
         #firstIntro,
         #secondIntro {
@@ -255,6 +277,17 @@ export class AppHome extends LitElement {
         ul {
           padding-left: 18em;
           padding-right: 18em;
+        }
+      }
+
+      @media(prefers-color-scheme: light) {
+        fast-button {
+          background: #e5e5e5;
+          color: black;
+        }
+
+        #newButton {
+          color: white;
         }
       }
 

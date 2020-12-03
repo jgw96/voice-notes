@@ -101,7 +101,6 @@ export class MemoDetail extends LitElement {
 
       #exportToOnedrive button {
         background: var(--app-color-primary);
-        color: white;
         border-radius: 4px;
         padding: 8px;
         text-transform: uppercase;
@@ -189,6 +188,13 @@ export class MemoDetail extends LitElement {
 
         ul {
           background: lightgrey;
+        }
+      }
+
+      @media(prefers-color-scheme: light) {
+        fast-button {
+          background: #e5e5e5;
+          color: black;
         }
       }
 
@@ -392,9 +398,9 @@ export class MemoDetail extends LitElement {
           </div>
 
           <div id="detailActions">
-                <fast-button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share <img src="/assets/share.svg" alt="share icon"></fast-button>
-                <fast-button id="downloadButton" @click="${() => this.download(this.memo)}">Save <img src="/assets/save.svg" alt="Save icon"></fast-button>
-                <fast-button @click="${() => this.deleteNote(this.memo)}">Delete <img src="/assets/close.svg" alt="close icon"></fast-button>
+                <fast-button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share</fast-button>
+                <fast-button id="downloadButton" @click="${() => this.download(this.memo)}">Save</fast-button>
+                <fast-button @click="${() => this.deleteNote(this.memo)}">Delete</fast-button>
           </div>
           </div>
 

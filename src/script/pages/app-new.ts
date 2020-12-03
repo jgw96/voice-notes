@@ -33,6 +33,19 @@ export class AppNew extends LitElement {
         padding: 1em 2em 2em 2em;
       }
 
+      @media(prefers-color-scheme: light) {
+        #innerAudio {
+          background: white;
+          box-shadow: none;
+        }
+      }
+
+      @media(prefers-color-scheme: dark) {
+        #innerAudio {
+          background: var(--neutral-fill-active);
+        }
+      }
+
       #toolbar {
         position: fixed;
         bottom: 0;
@@ -44,8 +57,6 @@ export class AppNew extends LitElement {
         display: flex;
         padding-right: 16px;
         padding-left: 16px;
-
-        color: white;
       }
 
       #toolbar span {
@@ -93,6 +104,12 @@ export class AppNew extends LitElement {
 
         align-self: flex-end;
         margin-top: 2em;
+      }
+
+      @media(prefers-color-scheme: light) {
+        #saveButton {
+          color: white;
+        }
       }
 
       #audioDiv {
@@ -184,6 +201,10 @@ export class AppNew extends LitElement {
         #transcript {
           color: black;
         }
+
+        #recordButton, #stopButton {
+          color: white;
+        }
       }
 
       @media(max-width: 800px) {
@@ -213,6 +234,13 @@ export class AppNew extends LitElement {
 
         #toolbar span {
           color: white;
+        }
+      }
+
+      @media(prefers-color-scheme: light) {
+        fast-button {
+          background: #e5e5e5;
+          color: black;
         }
       }
     `;
@@ -369,7 +397,7 @@ export class AppNew extends LitElement {
   draw(data: Uint8Array, context: any, canvas: HTMLCanvasElement | OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext | HTMLCanvasElement | null | undefined) {
     this.analyser?.getByteFrequencyData(data);
 
-    context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#181818' : 'white';
+    context.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#181818' : '#edebe9';
     context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
     let barWidth = (window.innerWidth / data.length) * 4.5;
