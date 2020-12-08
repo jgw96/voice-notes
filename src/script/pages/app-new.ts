@@ -243,6 +243,16 @@ export class AppNew extends LitElement {
           color: black;
         }
       }
+
+      @media (max-width: 400px) {
+        #innerAudio audio {
+          width: auto;
+        }
+
+        #innerAudio {
+          margin-top: 6em;
+        }
+      }
     `;
   }
 

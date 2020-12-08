@@ -215,6 +215,8 @@ export class AppHome extends LitElement {
         #toolbar {
           animation-name: slideup;
           animation-duration: 300ms;
+
+          padding-left: 16px;
         }
 
         app-header #newButton {
@@ -223,6 +225,7 @@ export class AppHome extends LitElement {
 
         #toolbar #newButton {
           margin-top: initial;
+          flex: 1;
         }
 
         pwa-install {
