@@ -51,12 +51,18 @@ export class AppHome extends LitElement {
         z-index: 9999;
       }
 
+      #homeWrapper {
+        background-color: transparent;
+      }
+
       ul {
         list-style: none;
         padding: 0;
         margin: 0;
         margin-bottom: 2em;
         padding: 16px;
+
+        background-color: transparent;
       }
 
       ul fast-card {
@@ -217,6 +223,9 @@ export class AppHome extends LitElement {
           animation-duration: 300ms;
 
           padding-left: 16px;
+
+          background: #181818c7;
+          backdrop-filter: blur(10px);
         }
 
         app-header #newButton {
@@ -233,6 +242,17 @@ export class AppHome extends LitElement {
           bottom: initial;
 
           display: none;
+        }
+
+        ul fast-card {
+          border-radius: 8px;
+        }
+      }
+
+      @media(max-width: 800px) and (prefers-color-scheme: light) {
+        #toolbar {
+          background: rgba(255, 255, 255, 0.72);
+          backdrop-filter: blur(10px);
         }
       }
 
@@ -440,7 +460,7 @@ export class AppHome extends LitElement {
         </fast-button>
       </app-header>
 
-      <div>
+      <div id="homeWrapper">
         ${this.notes && this.notes.length > 0
           ? html`<ul>
               ${this.notes.map(
@@ -497,20 +517,6 @@ export class AppHome extends LitElement {
 
         <pwa-install>Install Memos</pwa-install>
       </div>
-
-      ${(navigator as any).connection
-        ? html`${this.checkConnection() === true
-            ? html`<img
-                id="introImg"
-                src="/assets/intro.webp"
-                alt="intro image"
-              />`
-            : null}`
-        : html`<img
-            id="introImg"
-            src="/assets/intro.webp"
-            alt="intro image"
-          />`}
     `;
   }
 }
