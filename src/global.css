@@ -19,7 +19,7 @@ html::-webkit-scrollbar {
 }
 
 @media(prefers-color-scheme: light) {
-  fast-design-system-provider {
+  :host {
     --background-color: #edebe9;
     color: black;
   }

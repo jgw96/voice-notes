@@ -89,7 +89,7 @@ export class AppHome extends LitElement {
 
       ul fast-card audio {
         height: 34px;
-        width: 80%;
+        width: 70%;
       }
 
       ul fast-card h5 {
@@ -271,15 +271,20 @@ export class AppHome extends LitElement {
         #secondIntro {
           color: white;
         }
+
+        fast-card {
+          color: white;
+        }
       }
 
       @media (min-width: 1000px) {
         ul {
           display: grid;
-          grid-template-columns: 50% 48%;
           grid-gap: 16px;
-          padding-left: 10em;
           padding-right: 10em;
+
+          padding-left: 16px;
+          grid-template-columns: auto auto auto;
         }
 
         #introImg {
@@ -314,11 +319,15 @@ export class AppHome extends LitElement {
         }
       }
 
-      @media (screen-spanning: single-fold-vertical) {
+      @media (horizontal-viewport-segments: 2) {
         ul {
           width: calc(env(fold-left) - 32px);
           padding-left: 16px;
           padding-right: 16px;
+
+          grid-template-columns: auto auto;
+          gap: 16px 16px 16px;
+          grid-column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) + 16px);
         }
 
         app-new {
@@ -369,7 +378,7 @@ export class AppHome extends LitElement {
   }
 
   async getNotes() {
-    const notes: Note[] = await get("notes");
+    const notes: Note[] | undefined = await get("notes");
 
     if (notes) {
       this.notes = notes;
@@ -385,23 +394,25 @@ export class AppHome extends LitElement {
   }
 
   async deleteNote(i: Note) {
-    const notes: Note[] = await get("notes");
+    const notes: Note[] | undefined = await get("notes");
 
-    notes.forEach(async (note: Note) => {
-      if (i.name === note.name) {
-        const index = notes.indexOf(note);
+    if (notes) {
+      notes.forEach(async (note: Note) => {
+        if (i.name === note.name) {
+          const index = notes.indexOf(note);
 
-        if (index > -1) {
-          notes.splice(index, 1);
+          if (index > -1) {
+            notes.splice(index, 1);
 
-          this.notes = notes;
+            this.notes = notes;
 
-          await set("notes", notes);
+            await set("notes", notes);
+          }
+
+          await this.getNotes();
         }
-
-        await this.getNotes();
-      }
-    });
+      });
+    }
   }
 
   async shareNote(note: Note) {
@@ -491,7 +502,8 @@ export class AppHome extends LitElement {
             <audio .src="${URL.createObjectURL(i.blob)}" controls></audio>
 
             <div id="detailBlock">
-              <fast-button @click="${() => this.detail(i)}">Details</fast-button>
+              <fast-button @click="${() =>
+                this.detail(i)}">Details</fast-button>
             </div>
         </fast-card>
           `

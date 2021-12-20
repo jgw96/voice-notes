@@ -1,18 +1,16 @@
-import { LitElement, css, html, customElement, property } from 'lit-element';
-import { Note } from '../../types/interfaces';
-import { getMemo } from '../services/data';
-import { Router } from '@vaadin/router';
-import { set, get } from 'idb-keyval';
-import {fileSave } from "browser-nativefs";
+import { LitElement, css, html, customElement, property } from "lit-element";
+import { Note } from "../../types/interfaces";
+import { getMemo } from "../services/data";
+import { Router } from "@vaadin/router";
+import { set, get } from "idb-keyval";
+import { fileSave } from "browser-nativefs";
 
 import "../components/app-toast";
 
 declare var TimestampTrigger: any;
 
-
-@customElement('memo-detail')
+@customElement("memo-detail")
 export class MemoDetail extends LitElement {
-
   @property() memo: Note | undefined = undefined;
   @property({ type: String }) reminderTime: string;
   @property({ type: Boolean }) showToast: boolean = false;
@@ -29,7 +27,11 @@ export class MemoDetail extends LitElement {
         top: 12px;
       }
 
-      @media(min-width: 800px) {
+      #deleteButton {
+        background: var(--accent-fill-rest);
+      }
+
+      @media (min-width: 800px) {
         #backButton {
           border-radius: 0px !important;
         }
@@ -86,7 +88,8 @@ export class MemoDetail extends LitElement {
         font-size: 20px;
       }
 
-      #reminder, #exportToOnedrive {
+      #reminder,
+      #exportToOnedrive {
         display: flex;
         flex-direction: column;
         width: 18em;
@@ -108,12 +111,12 @@ export class MemoDetail extends LitElement {
         cursor: pointer;
       }
 
-      #reminder label{
+      #reminder label {
         font-weight: bold;
         margin-bottom: 6px;
       }
 
-      #reminder fast-button{
+      #reminder fast-button {
         width: 5em;
         align-self: flex-end;
         margin-top: 16px;
@@ -161,7 +164,7 @@ export class MemoDetail extends LitElement {
         }
       }
 
-      @media(prefers-color-scheme: dark) {
+      @media (prefers-color-scheme: dark) {
         #nameBlock {
           color: white;
         }
@@ -175,7 +178,7 @@ export class MemoDetail extends LitElement {
         }
       }
 
-      @media(prefers-color-scheme: light) {
+      @media (prefers-color-scheme: light) {
         #backButton {
           background: #bbbbbb;
           border-radius: 50%;
@@ -191,7 +194,7 @@ export class MemoDetail extends LitElement {
         }
       }
 
-      @media(prefers-color-scheme: light) {
+      @media (prefers-color-scheme: light) {
         fast-button {
           background: #e5e5e5;
           color: black;
@@ -237,13 +240,13 @@ export class MemoDetail extends LitElement {
         }
       }
 
-      @media(max-width: 800px) {
+      @media (max-width: 800px) {
         #detailActions button {
           height: 3em;
         }
       }
 
-      @media(screen-spanning: single-fold-vertical) {
+      @media (horizontal-viewport-segments: 2) {
         #nameBlock {
           display: flex;
           padding-left: 4em;
@@ -256,7 +259,6 @@ export class MemoDetail extends LitElement {
           flex: 1;
         }
       }
-
     `;
   }
 
@@ -283,9 +285,9 @@ export class MemoDetail extends LitElement {
       if ((navigator as any).canShare && (navigator as any).canShare(file)) {
         await (navigator as any).share({
           file: file,
-          title: 'Note',
-          text: 'Check out this note',
-        })
+          title: "Note",
+          text: "Check out this note",
+        });
       }
     }
   }
@@ -293,10 +295,10 @@ export class MemoDetail extends LitElement {
   async download(memo: Note | undefined) {
     const options = {
       // Suggested file name to use, defaults to `''`.
-      fileName: 'Untitled.weba',
+      fileName: "Untitled.weba",
       // Suggested file extensions (with leading '.'), defaults to `''`.
-      extensions: ['.aac'],
-      mimeTypes: ['audio/aac'],
+      extensions: [".aac"],
+      mimeTypes: ["audio/aac"],
     };
 
     if (memo) {
@@ -306,22 +308,24 @@ export class MemoDetail extends LitElement {
 
   async deleteNote(memo: Note | undefined) {
     if (memo) {
-      const notes: Note[] = await get('notes');
+      const notes: Note[] | undefined = await get("notes");
 
-      notes.forEach(async (note: Note) => {
-        if (memo.name === note.name) {
-          const index = notes.indexOf(note);
+      if (notes) {
+        notes.forEach(async (note: Note) => {
+          if (memo.name === note.name) {
+            const index = notes.indexOf(note);
 
-          if (index > -1) {
-            notes.splice(index, 1);
+            if (index > -1) {
+              notes.splice(index, 1);
 
-            await set('notes', notes);
+              await set("notes", notes);
+            }
           }
-        }
-      })
+        });
+      }
     }
 
-    Router.go('/');
+    Router.go("/");
   }
 
   handleDate(event: any) {
@@ -331,19 +335,20 @@ export class MemoDetail extends LitElement {
 
   askPermission() {
     return new Promise(function (resolve, reject) {
-      const permissionResult = Notification.requestPermission(function (result) {
+      const permissionResult = Notification.requestPermission(function (
+        result
+      ) {
         resolve(result);
       });
 
       if (permissionResult) {
         permissionResult.then(resolve, reject);
       }
-    })
-      .then(function (permissionResult) {
-        if (permissionResult !== 'granted') {
-          throw new Error('We weren\'t granted permission.');
-        }
-      });
+    }).then(function (permissionResult) {
+      if (permissionResult !== "granted") {
+        throw new Error("We weren't granted permission.");
+      }
+    });
   }
 
   async setReminder() {
@@ -357,18 +362,19 @@ export class MemoDetail extends LitElement {
         r.showNotification("Memos Reminder", {
           tag: Math.random(),
           body: `Your reminder from Memos: ${location.href}`,
-          showTrigger: new TimestampTrigger(Date.now() + (new Date(this.reminderTime).getTime() - Date.now())),
-          icon: "/assets/icons/icon_256.png"
+          showTrigger: new TimestampTrigger(
+            Date.now() + (new Date(this.reminderTime).getTime() - Date.now())
+          ),
+          icon: "/assets/icons/icon_256.png",
         });
 
         this.showToast = true;
 
         setTimeout(() => {
           this.showToast = false;
-        }, 3000)
-      };
-    }
-    catch {
+        }, 3000);
+      }
+    } catch {
       console.log("couldnt set reminder");
     }
   }
@@ -378,48 +384,53 @@ export class MemoDetail extends LitElement {
       <div>
         <header>
           <button id="backButton" @click="${this.close}">
-            <img src="/assets/close.svg" alt="close icon">
+            <img src="/assets/close.svg" alt="close icon" />
           </button>
         </header>
 
         <div id="nameBlock">
-        <div>
-          <h2>${this.memo?.name}</h2>
+          <div>
+            <h2>${this.memo?.name}</h2>
 
-          ${this.memo ? html`<audio .src="${URL.createObjectURL(this.memo?.blob)}" controls>` : null}
+            ${this.memo
+              ? html`<audio
+                  .src="${URL.createObjectURL(this.memo?.blob)}"
+                  controls
+                ></audio>`
+              : null}
 
-          <div id="reminder">
-            <label for="reminder-time">Set a Reminder:</label>
-
-            <input type="datetime-local" id="reminder-time"
-                  name="reminder-time" @change="${this.handleDate}" .value="${this.reminderTime}">
-
-            <fast-button @click="${() => this.setReminder()}">Set</fast-button>
-          </div>
-
-          <div id="detailActions">
-                <fast-button id="shareButton" @click="${() => this.shareNote(this.memo)}">Share</fast-button>
-                <fast-button id="downloadButton" @click="${() => this.download(this.memo)}">Save</fast-button>
-                <fast-button @click="${() => this.deleteNote(this.memo)}">Delete</fast-button>
-          </div>
+            <div id="detailActions">
+              <fast-button
+                id="shareButton"
+                @click="${() => this.shareNote(this.memo)}"
+                >Share</fast-button
+              >
+              <fast-button
+                id="downloadButton"
+                @click="${() => this.download(this.memo)}"
+                >Save</fast-button
+              >
+              <fast-button
+                id="deleteButton"
+                @click="${() => this.deleteNote(this.memo)}"
+                >Delete</fast-button
+              >
+            </div>
           </div>
 
           <div>
-            ${this.memo?.transcript && this.memo?.transcript.length > 0 ? html`<h3>Transcript</h3>` : html`<h3>No Transcript</h3>`}
-
-            ${
-            this.memo?.transcript && this.memo?.transcript.length > 0 ? html`
-                <ul>
-                ${
-            this.memo?.transcript.map((line: any) => {
-            return html`
-                    <li>${line}</li>
-                    `
-            })
-            }
-                </ul>
-              ` : null
-            }
+            ${this.memo?.transcript && this.memo?.transcript.length > 0
+              ? html`<h3>Transcript</h3>`
+              : html`<h3>No Transcript</h3>`}
+            ${this.memo?.transcript && this.memo?.transcript.length > 0
+              ? html`
+                  <ul>
+                    ${this.memo?.transcript.map((line: any) => {
+                      return html` <li>${line}</li> `;
+                    })}
+                  </ul>
+                `
+              : null}
           </div>
         </div>
       </div>

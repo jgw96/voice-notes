@@ -253,6 +253,16 @@ export class AppNew extends LitElement {
           margin-top: 6em;
         }
       }
+
+      @media(horizontal-viewport-segments: 2) {
+        #introText {
+          width: 33%;
+        }
+
+        #audioDiv {
+          width: 49vw;
+        }
+      }
     `;
   }
 
@@ -387,6 +397,7 @@ export class AppNew extends LitElement {
     let canvas = null;
 
     if ('OffscreenCanvas' in window) {
+      // @ts-ignore
       canvas = new OffscreenCanvas(window.innerWidth, window.innerHeight);
     }
     else {
@@ -404,6 +415,7 @@ export class AppNew extends LitElement {
     this.draw(data, context, canvas, onscreenCanvas);
   }
 
+  // @ts-ignore
   draw(data: Uint8Array, context: any, canvas: HTMLCanvasElement | OffscreenCanvas, onScreenCanvas: ImageBitmapRenderingContext | HTMLCanvasElement | null | undefined) {
     this.analyser?.getByteFrequencyData(data);
 
@@ -424,6 +436,7 @@ export class AppNew extends LitElement {
     }
 
     if ('OffscreenCanvas' in window) {
+      // @ts-ignore
       let bitmapOne = (canvas as OffscreenCanvas).transferToImageBitmap();
       (onScreenCanvas as ImageBitmapRenderingContext).transferFromImageBitmap(bitmapOne);
     }
@@ -432,7 +445,7 @@ export class AppNew extends LitElement {
   }
 
   async save() {
-    const notes: Note[] = await get('notes');
+    const notes: Note[] | undefined = await get('notes');
 
     if (notes && this.recorded) {
       notes.push({ name: this.fileName || "No name provided", blob: this.recorded, transcript: this.lines });
@@ -461,7 +474,7 @@ export class AppNew extends LitElement {
     try {
       this.wakeLock = await (navigator as any).wakeLock.request('screen');
       console.log('Wake Lock is active');
-    } catch (err) {
+    } catch (err: any) {
       console.error(`${err.name}, ${err.message}`);
     }
   };
